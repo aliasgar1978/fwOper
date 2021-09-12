@@ -4,14 +4,10 @@ from nettoolkit import *
 from collections import OrderedDict
 from copy import deepcopy
 
-from .common import Plurals, Singulars
-from .control import (
-	network_group_member, port_group_member, icmp_group_member, group_object_member,
-	protocol_group_member,
-	network_member, port_member, 
-	HOST, NETWORK, OBJ_GROUP, PORTS, update_ports_name, 
-	ANY, VALID_MEMBER_TYPES,
-	)
+from .member import *
+from .entity import *
+from .static import *
+from .fwObj import *
 
 # ----------------------------------------------------------------------------------------
 # Local Functions
@@ -37,8 +33,8 @@ def _object_group_list(config_list):
 
 
 def get_member_obj(member_type, member, objs):
-	"""convert and provided string member to member object aka: HOST, NETWORK, OBJ_GROUP, PORTS based on its member-type provided.
-	objs: requires for recursive lookup for OBJ_GROUP (if any)"""
+	"""convert and provided string member to member object aka: Host, Network, ObjectGroup, Ports based on its member-type provided.
+	objs: requires for recursive lookup for ObjectGroup (if any)"""
 	member_type_map = {
 		'port-object': port_member,
 		'network-object': network_member,
@@ -202,7 +198,7 @@ class OBJ(Singulars):
 		for _ in self[member_type]:
 			if member_obj == _: 
 				return _
-			elif isinstance(_, OBJ_GROUP):
+			elif isinstance(_, ObjectGroup):
 				if self.parent[_.group_name].contains(member, member_type):
 					return _
 
@@ -263,7 +259,7 @@ class OBJ(Singulars):
 		elif isinstance(item, (str, int)):
 			updated_item = self._get_item_object(item_type, item)
 			self._obj_add(item_type, updated_item)
-		elif isinstance(item, (HOST, NETWORK, OBJ_GROUP, PORTS)):
+		elif isinstance(item, (Host, Network, ObjectGroup, Ports)):
 			self._obj_add(item_type, item)
 		else:
 			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
@@ -287,7 +283,7 @@ class OBJ(Singulars):
 		elif isinstance(item, (str, int)):
 			updated_item = self._get_item_object(item_type, item)
 			self._obj_delete(item_type, updated_item)
-		elif isinstance(item, (HOST, NETWORK, OBJ_GROUP, PORTS)):
+		elif isinstance(item, (Host, Network, ObjectGroup, Ports)):
 			self._obj_delete(item_type, item)
 		else:
 			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
@@ -310,7 +306,7 @@ class OBJ(Singulars):
 		return updated_item
 
 	# supporting method for retriving member object for provided object-type 
-	# ex: HOST, NETWORK…
+	# ex: Host, Network…
 	def _get_member(self, obj_type, spl_line):
 		if obj_type == 'network-object':
 			member = network_group_member(spl_line, 1, self.parent)

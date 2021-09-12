@@ -22,11 +22,5 @@ __version__ = "0.0.2"
 from .acl import (ACLS, ACL, ACL_REMARK)
 from .acg import (OBJS, OBJ, get_member_obj)
 from .route import (ROUTES, ROUTE)
-from .instances import (INSTANCES)
-from .common import get_object
-from .control import (
-	HOST, NETWORK, OBJ_GROUP, PORTS,
-	ANY, ICMP, DEFAULT_ROUTE, VALID_PROTOCOLS,
-	network_member, port_member, get_match_dict,
-	update_ports_name,
-	)
+from .instances import (Instances)
+

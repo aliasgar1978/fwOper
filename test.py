@@ -1,5 +1,5 @@
 
-import firewall as fw
+import fwOper as fw
 
 file1 = 'c:/users/al202t/desktop/mk-S-5515irf-1 sh run.log'
 file2 = 'c:/users/al202t/desktop/d4z-vfw-iiw-bgym-admin.log'
@@ -9,7 +9,7 @@ file = file1
 with open(file, 'r') as f:
 	flst = f.readlines()
 
-insts = fw.get_object(fw.INSTANCES, conf_list=flst)
+insts = fw.get_object(fw.Instances, conf_list=flst)
 
 if file == file1:
 	print(insts.system.keys())

@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from nettoolkit import *
 
-from .common import Singulars
+from .fwObj import *
 # ----------------------------------------------------------------------------------------
 def routes_list(config_list):
 	"""list of lines with static routes from given config-list """

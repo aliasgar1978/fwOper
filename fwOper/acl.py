@@ -4,12 +4,11 @@ from nettoolkit import *
 from collections import OrderedDict
 from copy import deepcopy
 
-from .common import Plurals, Singulars
 from .acg import OBJ
-from .control import (
-	network_group_member, port_group_member, 
-	ANY, HOST, NETWORK, OBJ_GROUP, PORTS,
-	)
+from .member import *
+from .entity import *
+from .static import *
+from .fwObj import *
 
 # ----------------------------------------------------------------------------------------
 # Local Functions
@@ -173,9 +172,9 @@ class ACL(Singulars):
 			acl_src = acl_details['source']
 			acl_dst = acl_details['destination']
 			acl_prt = acl_details['ports']
-			if ((isinstance(acl_src, OBJ_GROUP) and acl_src.grp == item) 
-				or (isinstance(acl_dst, OBJ_GROUP) and acl_dst.grp == item) 
-				or (isinstance(acl_prt, OBJ_GROUP) and acl_prt.grp == item)
+			if ((isinstance(acl_src, ObjectGroup) and acl_src.grp == item) 
+				or (isinstance(acl_dst, ObjectGroup) and acl_dst.grp == item) 
+				or (isinstance(acl_prt, ObjectGroup) and acl_prt.grp == item)
 				):
 				return line_no
 		return False
@@ -189,7 +188,7 @@ class ACL(Singulars):
 			if isinstance(acl_details, dict):
 				for k, v in item.items():
 					if k == 'log_warning': continue
-					if isinstance(acl_details[k], OBJ_GROUP) and isinstance(v, OBJ):
+					if isinstance(acl_details[k], ObjectGroup) and isinstance(v, OBJ):
 						if len(acl_details[k].grp > v): break
 					elif acl_details[k] != v:
 						break

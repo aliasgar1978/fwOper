@@ -1,9 +1,9 @@
 
 # ----------------------------------------------------------------------------------------
-from .common import Plurals, Singulars, get_object
 from .route import ROUTES
 from .acl import ACLS
 from .acg import OBJS
+from .fwObj import *
 
 # ----------------------------------------------------------------------------------------
 def _get_instances_lists_dict(config_list):
@@ -24,7 +24,7 @@ def _get_instances_lists_dict(config_list):
 	return _instances_dict
 
 # ----------------------------------------------------------------------------------------
-class INSTANCES(Plurals):
+class Instances(Plurals):
 	"""firewall object with instances"""
 
 	def __init__(self, config_list):
@@ -37,12 +37,12 @@ class INSTANCES(Plurals):
 	def set_objects(self):
 		"""sets instances details"""
 		for _name, lines_list in self._repr_dic.items():
-			_instance =  INSTANCE(_name, lines_list)
+			_instance =  Instance(_name, lines_list)
 			_instance.parse()
 			self._repr_dic[_name] = _instance
 
 # ----------------------------------------------------------------------------------------
-class INSTANCE(Singulars):
+class Instance(Singulars):
 	"""a single instance object on a firewall config"""
 
 	def __init__(self, instance_name, instance_config_list):
