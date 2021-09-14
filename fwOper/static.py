@@ -13,7 +13,7 @@ DEFAULT_ROUTE = ("0.0.0.0", "0.0.0.0")
 
 ICMP = ('echo', 'echo-reply')
 VALID_PROTOCOLS = ('tcp', 'udp', 'icmp', 'ip', 'scp')
-VALID_PORT_MATCHES = ('eq', 'range', 'echo', 'echo-reply')
+VALID_PORT_MATCHES = ('eq', 'range', 'echo', 'echo-reply', 'object-group')
 PORT_MAPPINGS = {
 	7: 'echo', 
 	22: 'ssh', 

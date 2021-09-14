@@ -61,10 +61,11 @@ class ObjectGroup(EntiryProperties):
 
 class Ports(EntiryProperties):
 	"""a port/range-of-ports object """
-	def __init__(self, port_type, port, port_range_end=''): 
+	def __init__(self, port_type, port, port_range_end='', objectGroups=None): 
 		self._set_porttype(port_type)
-		self._set_ports(port, port_range_end)
+		self._set_ports(port, port_range_end, objectGroups)
 		self._hash = hash(port)
+
 	def _set_porttype(self, port_type):
 		if port_type in VALID_PORT_MATCHES:
 			self.port_type = port_type
@@ -79,21 +80,26 @@ class Ports(EntiryProperties):
 			self.end = ''
 		else:
 			raise Exception(f"InvalidPortType{port_type}, Valid options are {VALID_PORT_MATCHES}")
+
 	def _set_mapped_port_numbers(self, start, end):
 		for k, v in PORT_MAPPINGS.items():
 			if v == start: self.start = int(k)
 			if v == end: self.end = int(k)
 
-	def _set_ports(self, start, end):
+	def _set_ports(self, start, end, objectGroups):
 		if not self.port_type: return None
 		if start in PORT_MAPPINGS.values() or end in PORT_MAPPINGS.values():
 			self._set_mapped_port_numbers(start, end)
-		else:
-			try:
-				self.start = int(start)
-				self.end = int(end) if self.port_type == 'range' else ''
-			except:
-				raise Exception(f"InvalidPort[range]Detected:{start}{end}, requires number.")
+			return
+		if self.port_type == 'object-group':
+			self.end = ''
+			self.start = ObjectGroup(start, objectGroups)
+		try:
+			self.start = int(start)
+			self.end = int(end) if self.port_type == 'range' else ''
+		except:
+			raise Exception(f"InvalidPort[range]Detected:{start}{end}, requires number.")
+
 	@property
 	def _str(self):
 		port = PORT_MAPPINGS[self.start] if self.start in PORT_MAPPINGS else self.start
@@ -101,6 +107,7 @@ class Ports(EntiryProperties):
 		port_end = f' {port_end}' if port_end else ''
 		port_type = f'{self.port_type} ' if self.port_type else ''
 		return f'{port_type}{port}{port_end}'.strip()
+
 	def __contains__(self, port):
 		end = self.start if not self.end else self.end
 		for k, v in PORT_MAPPINGS.items():
