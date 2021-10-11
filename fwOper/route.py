@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from collections import OrderedDict
 from nettoolkit import *
@@ -31,8 +30,15 @@ class ROUTES():
 	def __getattr__(self, attr): return self[attr]
 	def __len__(self): return len(self.routes_list)
 	def __contains__(self, network): return self.prefix(network)
+	def __str__(self): return self.str()
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
+
+	def str(self):
+		s = ''
+		for k in self.routes_list:
+			s += k.str()
+		return s
 
 	def prefix(self, network):
 		"""check matching network in ROUTES object, return matching route """
@@ -58,14 +64,23 @@ class ROUTES():
 # Static Route Details
 # ----------------------------------------------------------------------------------------
 class ROUTE(Singulars):
-	"""Individual static-route object"""
+	"""Individual static-route object
+	** Properties can be accessible for ROUTE object **
+	(network, nexthop, ifdesc, distance)
+	"""
+
 	def __init__(self, route_line):
 		super().__init__()
 		self.route_line = route_line
 		self._repr_dic = OrderedDict()
+		self._repr_dic = {'ifdesc':'', 'nexthop':'', 'distance':'', 'network':'', }
+
 	def __contains__(self, network): return isSubset(network, self.network)
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
+
+	# return String representation of routes
+	def str(self): return self.route_line + "\n"
 
 	def parse(self):
 		"""parse static route line and set route_dict """

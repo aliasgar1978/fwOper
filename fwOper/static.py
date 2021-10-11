@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 # Static / Universal Variables
 # ----------------------------------------------------------------------------------------
@@ -21,5 +20,12 @@ PORT_MAPPINGS = {
 	80: 'www', 
 	443: 'https', 
 }
-VALID_MEMBER_TYPES = ('network-object', 'port-object', 'icmp-object', 'group-object', 'protocol-object')
+VALID_MEMBER_TYPES = ('network-object', 'port-object', 
+	'icmp-object', 'protocol-object', 'group-object', )
+
+MEMBERS_MEMBERTYPES = {
+	ICMP: 'icmp-object',
+	VALID_PROTOCOLS: 'protocol-object',
+}
+
 

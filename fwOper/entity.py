@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from nettoolkit import *
 
@@ -30,16 +29,18 @@ class Host(EntiryProperties):
 		self._str = f"host {host}"
 		self._hash = hash(self._iphost)
 		self.version = self._iphost.version
+	def split(self): return str(self._iphost).split()
 
 class Network(EntiryProperties):
 	"""a network/subnet object 	"""
 	def __init__(self, network, dotted_mask=None): 
 		if dotted_mask:
-			mask = to_dec_mask(dotted_mask)
-			self._subnet = network + "/" + str(mask)
+			self.mask = to_dec_mask(dotted_mask)
+			self._subnet = network + "/" + str(self.mask)
 		else:
 			self._subnet = network
 		self._network = addressing(self._subnet)
+		self.version = self._network.version
 		self._hash = hash(self._network)
 	@property
 	def _str(self):
@@ -63,8 +64,12 @@ class Ports(EntiryProperties):
 	"""a port/range-of-ports object """
 	def __init__(self, port_type, port, port_range_end='', objectGroups=None): 
 		self._set_porttype(port_type)
+		# print(">", self.port_type)
 		self._set_ports(port, port_range_end, objectGroups)
+		# print(">>", self.start, ">>", self.end)
 		self._hash = hash(port)
+
+	def split(self): return str(self).split()
 
 	def _set_porttype(self, port_type):
 		if port_type in VALID_PORT_MATCHES:
@@ -74,7 +79,7 @@ class Ports(EntiryProperties):
 				self.start = port_type				
 				self.end = ''
 				self._set_mapped_port_numbers(self.start, self.end)
-		elif port_type == 'log':
+		elif port_type == 'log' or port_type == '':
 			self.port_type = ''
 			self.start = ''
 			self.end = ''
@@ -82,9 +87,16 @@ class Ports(EntiryProperties):
 			raise Exception(f"InvalidPortType{port_type}, Valid options are {VALID_PORT_MATCHES}")
 
 	def _set_mapped_port_numbers(self, start, end):
+		# print("___", start, "____", end)
 		for k, v in PORT_MAPPINGS.items():
-			if v == start: self.start = int(k)
-			if v == end: self.end = int(k)
+			if v == start: 
+				self.start = int(k)
+			if v == end: 
+				self.end = int(k)
+		try: self.end
+		except: self.end = ''
+		try: self.start
+		except: self.start = ''
 
 	def _set_ports(self, start, end, objectGroups):
 		if not self.port_type: return None
@@ -94,11 +106,15 @@ class Ports(EntiryProperties):
 		if self.port_type == 'object-group':
 			self.end = ''
 			self.start = ObjectGroup(start, objectGroups)
+			return
 		try:
 			self.start = int(start)
+		except:
+			self.start = start
+		try:
 			self.end = int(end) if self.port_type == 'range' else ''
 		except:
-			raise Exception(f"InvalidPort[range]Detected:{start}{end}, requires number.")
+			self.end = end if self.port_type == 'range' else ''
 
 	@property
 	def _str(self):

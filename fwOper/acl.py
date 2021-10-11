@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from nettoolkit import *
 from collections import OrderedDict
@@ -37,19 +36,11 @@ class ACLS(Plurals):
 		self.set_acl_names()
 		self.set_objects(objs)
 
+	def __repr__(self):
+		setofacls = ",\n".join(set(self._repr_dic.keys()))
+		return f'{"-"*40}\n# Dict of access-lists listed below:  #\n{"-"*40}\n{setofacls}\n{"-"*40}'
+
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
-
-	def add_str(self, n=0, seq=True):
-		s = ''
-		for acl_name, acl_obj in self._repr_dic.items():
-			s += acl_obj.add_str(n, seq)
-		return s
-
-	def del_str(self, n=0, seq=True):
-		s = ''
-		for acl_name, acl_obj in self._repr_dic.items():
-			s += acl_obj.del_str(n, seq)
-		return s
 
 	def set_acl_names(self):
 		"""sets available access-lists names in _repr_dic (key) """
@@ -64,7 +55,7 @@ class ACLS(Plurals):
 	def set_objects(self, objs):
 		"""sets access-lists (ACL)s in _repr_dic (value) """
 		for acl_name, acl_lines_list in self._repr_dic.items():
-			acl =  ACL(acl_name, acl_lines_list)
+			acl =  ACL(acl_name, acl_lines_list, objs)
 			acl.parse(objs)
 			self._repr_dic[acl_name] = acl
 
@@ -86,6 +77,7 @@ class ACL(Singulars):
 	:: Properties ::
 	max: maximum line number on acl
 	min: minimum line number on acl
+	sequence: boolean property to display/hide line numbers
 
 	"""
 	end_point_identifiers_pos = {	# static index points 
@@ -96,56 +88,52 @@ class ACL(Singulars):
 	mandatory_item_values_for_str = ('acl_type', 'action', 'protocol',
 		'source', 'destination', 'ports', 'log_warning' )
 
-	def __init__(self, acl_name, acl_lines_list):
+	def __init__(self, acl_name, acl_lines_list, objs):
 		super().__init__(acl_name)
 		self.acl_lines_list = acl_lines_list
+		self.objs = objs
+		self.removals = ''
+		self._sequence = False
 		self._repr_dic = OrderedDict()
 	def __iter__(self):
 		for k, v in sorted(self._repr_dic.items()):
 			yield (k, v)
 	def __getitem__(self, item):
-		try:
-			return self._to_str(item)
-		except KeyError:
-			return None
+		if isinstance(item, slice):
+			return ''.join([self[i] for i in range(*item.indices(len(self)))])
+		else:
+			try:
+				return self._to_str(item)
+			except KeyError:
+				return None
+	def __delitem__(self, item):
+		if isinstance(item, slice):
+			for i in reversed(range(*item.indices(len(self)))):
+				self.delete(i)
+		else:
+			try:
+				self.delete(item)
+			except KeyError:
+				return None
 	@property
 	def max(self): return max(self._repr_dic.keys())
 	@property
 	def min(self): return min(self._repr_dic.keys())
+	@property 	             ## Boolean: sequence number visibility
+	def sequence(self): return self._sequence
+	@sequence.setter
+	def sequence(self, seq): self._sequence = seq
 	def __add__(self, attribs):  return self.copy_and_append(attribs)
-	def __sub__(self, n):  return self.copy_and_delete(n)
-	def __iadd__(self, n):
-		if isinstance(n, ACL):
-			if n._name == self._name:
-				for k, v in n:
-					if k in self._repr_dic: self.insert(k, v)
-					else: self.append(v)
-			else:
-				raise Exception(f"ACLNAME-MISMATCHES-{n._name} v/s {self._name}")
-		elif isinstance(n, dict):
-			for k, v in n.items():
-				if k in self._repr_dic: self.insert(k, v)
-				else: self.append(v)
-		else:
-			raise Exception(f"Not-an-addablevalue {n}")
-		return self
-	def __isub__(self, n):
-		if isinstance(n, int): 
-			self.delete(n)
-		elif isinstance(n, dict):
-			mismatches = self.contains(n, True)
-			for m in reversed(mismatches):
-				self -= m
-		else:
-			raise Exception(f"Not-a-deletablevalue {n}")
-		return self
+	def __iadd__(self, attribs): return self.append(attribs)
+	def __sub__(self, n): return self.copy_and_delete(n)
+	def __isub__(self, n): return self.delete(n)
 	def __eq__(self, obj):
 		for k, v in obj:
 			if k in self._repr_dic and self._repr_dic[k] == v: continue
 			else: return False
 		return True
 	def __gt__(self, obj):
-		diffacl = ACL(self._name, None)
+		diffacl = ACL(self._name, None, self.grp)
 		for self_k, self_v in self._repr_dic.items():
 			found = False
 			for obj_k, obj_v in obj._repr_dic.items():
@@ -154,7 +142,7 @@ class ACL(Singulars):
 			if not found: diffacl[self_k] = self_v
 		return diffacl
 	def __lt__(self, obj):
-		diffacl = ACL(self._name, None)
+		diffacl = ACL(self._name, None, self.grp)
 		for obj_k, obj_v in obj._repr_dic.items():
 			found = False
 			for self_k, self_v in self._repr_dic.items():
@@ -166,7 +154,55 @@ class ACL(Singulars):
 		
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
 
+	# String representation of full acl	
+	def str(self):
+		s = ''
+		for k, v in self:
+			s += self[k]
+		return s
+
+	# delete a line in acl:  usage= del(acl_name[n])
+	def delete(self, attribs): 
+		if isinstance(attribs, int):
+			self.delete_by_line(attribs)
+		elif isinstance(attribs, dict):
+			self.delete_by_attribs(attribs)
+		return self
+
+	# delete a line in acl:  usage= del(acl_name[n])
+	def delete_by_line(self, line_no):
+		self.removals += self._del_str(line_no)
+		self._key_delete(line_no)
+		self._key_deflate(line_no)
+
+	# delete a line in acl by attrib
+	def delete_by_attribs(self, attribs):
+		mv = self._matching_value(attribs)
+		if mv: self.delete_by_line(mv)
+
+
+	# insert a line in acl: usage=  aclname[line_no] = attribs
+	def insert(self, line_no, attribs):
+		mv = self._matching_value(attribs)
+		if not mv:
+			self._key_extend(line_no)
+			self._add(line_no, attribs)
+		else:
+			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
+
+	# append a line in acl: 
+	def append(self, attribs):
+		mv = self._matching_value(attribs)
+		if not mv:
+			self._add(self.max+1, attribs)
+		else:
+			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
+		return self
+
 	def has(self, item):
+		"""check matching item in acl object src/dst/port, 
+		useful for Boolean check (returns a line number if match else False)
+		"""
 		for line_no, acl_details in  self:
 			if not isinstance(acl_details, dict): continue
 			acl_src = acl_details['source']
@@ -181,9 +217,11 @@ class ACL(Singulars):
 
 	def contains(self, item, all=False):
 		"""check matching attributes in acl object, 
-		return matching acl line numbers list
+		return matching acl line numbers list (all matching lines)
 		"""
 		matching_lines = []
+		item = self._update_group_members(item)
+		item = self._network_to_host(item)
 		for line_no, acl_details in  self:
 			if isinstance(acl_details, dict):
 				for k, v in item.items():
@@ -197,14 +235,8 @@ class ACL(Singulars):
 					matching_lines.append(line_no)
 		return matching_lines
 
-	# do not return anything, instead alter actual acl
-	def append(self, attribs):
-		"""append a new acl line in acl object with provided attributes """
-		mv = self._matching_value(attribs)
-		if not mv:
-			self[self.max+1] = attribs
-		else:
-			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
+
+	# ---------------- Operate on a Copy --------------- 	
 
 	def copy_and_append(self, attribs):
 		"""create duplicate of self, append a new acl line in new object with provided attributes """
@@ -212,27 +244,11 @@ class ACL(Singulars):
 		newobj.append(attribs)
 		return newobj
 
-	def delete(self, line_no): 
-		"""delete a line in acl for given line number"""
-		self._key_delete(line_no)
-		self._key_deflate(line_no)
-
 	def copy_and_delete(self, attribs):
 		"""create duplicate of self, delete a line in new acl for given line number/attributes"""
 		newobj = deepcopy(self)
 		newobj -= attribs
 		return newobj
-
-	def insert(self, line_no, attribs):
-		"""insert a new acl line in acl object with provided attributes 
-		at given line number
-		"""
-		mv = self._matching_value(attribs)
-		if not mv:
-			self._key_extend(line_no)
-			self[line_no] = attribs
-		else:
-			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
 
 	def copy_and_insert(self, line_no, attribs):
 		"""create duplicate of self, insert a new acl line in new acl object,
@@ -243,34 +259,99 @@ class ACL(Singulars):
 		newacl.insert(line_no, attribs)
 		return newacl
 
-	# returns string, do not alter actual acl
-	def add_str(self, n=0, seq=True): 
-		"""String representation of access-list line(n), (omit 'n' for full acl) """
-		s = ''
-		if n and isinstance(n, int): 
-			return self._to_str(n, seq)
-		elif n and isinstance(n, (list, tuple, set)):
-			for i in n: s += self.add_str(i, seq)
-		elif not n:
-			for n, v in self: s += self.add_str(n, seq)
+	# ~~~~~~~~~~~~~~~~~~~ INTERNALS / SUPPORTIVE ~~~~~~~~~~~~~~~~~~~
+
+	# supportive: insert a new line at position n
+	def _key_extend(self, n):
+		rvs_keys = list(reversed(self._repr_dic.keys()))
+		for key in rvs_keys:
+			if key >= n: self[key+1] = self._repr_dic[key]
+			else: break
+
+	# supportive: deletes a line
+	def _key_delete(self, n):
+		try:
+			del(self._repr_dic[n])
+		except:
+			print(f"NoDeletableEntryFoundForLine-{n}-orAlreadyRemoved")
+
+	# supportive: rearranges next lines
+	def _key_deflate(self, n):
+		last_used_key = self.max
+		for key in range(n, last_used_key):
+			self[key] = self._repr_dic[key+1]
+		del(self._repr_dic[last_used_key])
+
+	# supportive : update member per std and insert entry to acl
+	def _add(self, line_no, attribs):
+		attribs = self._update_members(attribs)
+		attribs = self._update_remarks(line_no, attribs)
+		self[line_no] = attribs
+
+	# supportive : attributes update as per std source/destination/port/remark
+	def _update_members(self, attribs):
+		attribs = self._update_group_members(attribs)
+		attribs = self._network_to_host(attribs)
+		return attribs
+
+	# supportive : attributes update for remark field
+	def _update_remarks(self, n, attribs):
+		if not attribs.get('remark') :
+			attribs['remark'] = self._repr_dic[n-1]['remark']
+		return attribs
+
+	# supportive : attributes update as per std source/destination/port
+	def _update_group_members(self, attribs):
+		attribs['source'] = network_group_member(attribs['source'].split(), idx=0, objectGroups=self.objs)
+		attribs['destination'] = network_group_member(attribs['destination'].split(), idx=0, objectGroups=self.objs)
+		attribs['ports'] = port_group_member(attribs['ports'].split(), idx=0, objectGroups=self.objs)
+		return attribs
+
+	# supportive : attributes change from Network to Host 
+	def _network_to_host(self, attribs):
+		for k,v in attribs.items():
+			if isinstance(v, Network):
+				spl_v = str(v).split()
+				attribs[k] = Host(spl_v[0])
+		return attribs	
+
+	# ----------------- String repr / supportive --------------- #
+
+	# return String representation of an acl-line (n)
+	def _to_str(self, n):
+		seq = self.sequence
+		seq_no = f"line {n} " if seq else ""
+		item = self._repr_dic[n]
+		if isinstance(item, dict):
+			for v in self.mandatory_item_values_for_str:
+				if v not in item:
+					item[v] = self._normalize(v)
+			log_warning = " log warning" if item['log_warning'] else ""
+			s = (f"access-list {self._name} {seq_no}"
+				 f"{item['acl_type']} {item['action']} {item['protocol']} "
+				 f"{item['source']} {item['destination']} {item['ports']}{log_warning}\n")
+		else:
+			s = f"access-list {self._name} {seq_no}{item}"
 		return s
 
-	# returns string, do not alter actual acl
-	def del_str(self, n=0, seq=False): 
-		"""negated string representation of access-list line(n), (omit 'n' for full acl) """
+	# return negating string of an acl-line (n)
+	# usage: del(acl[n:n+x:step]) to delete acl entry(ies).
+	# get deleted entries using property acl.removals
+	def _del_str(self, n=0):
 		s = ''
 		if n and isinstance(n, int): 
-			return "no " + self._to_str(n, seq)
+			return "no " + self._to_str(n)
 		elif n and isinstance(n, (list, tuple, set)):
-			for i in n: s += self.del_str(i, seq)
+			for i in n: s += self._del_str(i)
 		elif not n:
-			for n, v in self: s += self.del_str(n, seq)
+			for n, v in self: s += self._del_str(n)
 		return s 
 
-	# ~~~~~~~~~~~~~~~~~~~ INTERNALS ~~~~~~~~~~~~~~~~~~~
+	## ----------- Other Supportive to Supportives --------- ##
 
+	# line number of an acl for matching attributes
 	def _matching_value(self, attribs):
-		"""line number of acl for matching attributes """
+		attribs = self._update_members(attribs)
 		for line_no, acl_details in self:
 			match = False
 			for k_attr, v_attr in attribs.items():
@@ -279,52 +360,8 @@ class ACL(Singulars):
 				if not match: break
 			if match: return line_no
 
-	def _key_extend(self, n):
-		"""supportive to insert a new line """
-		rvs_keys = list(reversed(self._repr_dic.keys()))
-		for key in rvs_keys:
-			if key >= n: self[key+1] = self._repr_dic[key]
-			else: break
-
-	def _key_deflate(self, n): # Not in use currently
-		"""supportive to delete a line (not in use), rearrange next lines """
-		last_used_key = self.max
-		# print(n, last_used_key)
-		for key in range(n, last_used_key):
-			self[key] = self[key+1]
-		del(self._repr_dic[last_used_key])
-		# print(self.max)
-
-	def _key_delete(self, n):
-		"""supportive to delete a line """
-		try:
-			del(self._repr_dic[n])
-		except:
-			print(f"NoDeletableEntryFoundForLine-{n}-orAlreadyRemoved")
-			# raise Exception(f"NoDeletableEntryFoundForLine-{n}")
-
-	def _to_str(self, n, seq=False):
-		"""return String representation of access-list line(n) ( add/remove )
-		seq=line number require or not in output (Boolean)
-		"""
-		item = self._repr_dic[n]
-		if isinstance(item, dict):
-			for v in self.mandatory_item_values_for_str:
-				if v not in item:
-					item[v] = self._normalize(v)
-			log_warning = " log warning" if item['log_warning'] else ""
-			seq_no = f"line {n} " if seq else ""
-			# print(seq, seq_no)
-			s = (f"access-list {self._name} {seq_no}"
-				 f"{item['acl_type']} {item['action']} {item['protocol']} "
-				 f"{item['source']} {item['destination']} {item['ports']}{log_warning}\n")
-		else:
-			s = item
-		return s
-
+	# return default attributes for the require item/attribute.
 	def _normalize(self, item):
-		"""add default attribute and return to given item/attribute
-		"""
 		normalize_item_values = {
 			'acl_type': 'extended', 
 			# 'action': 'permit', 
@@ -339,8 +376,9 @@ class ACL(Singulars):
 		else:
 			raise Exception(f"MissingMandatoryParameter-{item}, NormalizationNotAvailableForMandatoryField")
 
+
 	# ~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~~
-	# USED WHILE INITIATLIZING
+	# USED WHILE INITIATLIZING / PARSER
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	def parse(self, objs):
@@ -390,9 +428,10 @@ class ACL_REMARK():
 	remark: acl remark ( returns as str of obj )
 	"""
 	def __init__(self, remark): self.remark = remark
-	def __str__(self): return self.remark
+	def __str__(self): return self.str()
 	def __repr__(self): return self.remark
 	def __eq__(self, obj): return str(obj) == str(self)
+	def str(self): return self.remark + "\n"
 
 
 # ----------------------------------------------------------------------------------------

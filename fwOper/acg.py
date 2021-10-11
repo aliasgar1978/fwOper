@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from nettoolkit import *
 from collections import OrderedDict
@@ -59,6 +58,10 @@ class OBJS(Plurals):
 		self.obj_grps_list = _object_group_list(config_list)
 		self._set_obj_grp_basics()
 		self.set_objects()
+
+	def __repr__(self):
+		setofobjs = ",\n".join(set(self._repr_dic.keys()))
+		return f'{"-"*40}\n# Dict of Object groups listed below:  #\n{"-"*40}\n{setofobjs}\n{"-"*40}'
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
 
@@ -148,27 +151,14 @@ class OBJ(Singulars):
 	def __init__(self, obj_grp_name, _hash):
 		super().__init__(obj_grp_name)
 		self.description = ""
+		self.removals = {}
+		self.adders = {}
 		self._hash = _hash
-
-	def __setitem__(self, key, value):  self._add(key, value)
 	def __eq__(self, obj):  return not len([x for x in self > obj])
 	def __len__(self): return self._len_of_members()
-	def __contains__(self, member): return self.contains(member)
-	def __add__(self, attribs): 
-		newobj = deepcopy(self)
-		newobj += attribs
-		return newobj
-	def __sub__(self, attribs): 
-		newobj = deepcopy(self)
-		newobj._delete(attribs)
-		return newobj
-	def __iadd__(self, n):
-		if isinstance(n, dict):
-			for k, v in n.items(): self[k] = v
-		return self
-	def __isub__(self, n): 
-		self._delete(n)
-		return self
+	def __contains__(self, member): return self._contains(member)
+	def __iadd__(self, n): return self._add(n)
+	def __isub__(self, n): return self._delete(n)
 	def __gt__(self, obj):
 		diffs = self._missing(obj)
 		obj_grp = self._blank_copy_of_self()
@@ -179,66 +169,102 @@ class OBJ(Singulars):
 		obj_grp = self._blank_copy_of_self()
 		obj_grp._repr_dic = diffs
 		return obj_grp
+	def __add__(self, attribs): 
+		newobj = deepcopy(self)
+		newobj += attribs
+		return newobj
+	def __sub__(self, attribs): 
+		newobj = deepcopy(self)
+		newobj._delete(attribs)
+		return newobj
 
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
 
-	def _len_of_members(self):
-		l = 0
-		for v in self._repr_dic.values():
-			l += len(v)
-		return l
-
-	def contains(self, member, member_type=None):
-		"""check member in object instance, if available or not;
-		return member object if found
-		"""
-		if member_type is None: member_type = self._get_member_type(member)
-		member_obj = get_member_obj(member_type, member, self.parent)
-		if not self[member_type]: return None
-		for _ in self[member_type]:
-			if member_obj == _: 
-				return _
-			elif isinstance(_, ObjectGroup):
-				if self.parent[_.group_name].contains(member, member_type):
-					return _
-
-	def add_str(self, header=True): 
-		"""return String representation of object-group """
-		return self._to_str(False, header)
-
-	def del_str(self, header=False): 
-		"""return String representation of object-group as if members need to remove """
-		return self._to_str(True, header)
-
-	# ~~~~~~~~~~~~~~~~~~~ INTERNALS ~~~~~~~~~~~~~~~~~~~
-
-	# return String representation of object-group ( add/remove )
-	def _to_str(self, negate, header):
-		s = self._group_head() if header else ""
-		for obj_grp_cand_type, candidates in self:
-			for candidate in candidates:
-				if negate: s += " no"
-				s += f" {obj_grp_cand_type} {candidate}\n"
+	# String representation of full object-group
+	def str(self):
+		s = self._group_head()
+		s += self._group_description()
+		s += self._to_str(self._repr_dic, header=False)
 		return s
 
-	# return String representation of object-group header/name line
-	def _group_head(self):
-		return (f"object-group {self.obj_grp_type} {self._name} {self.obj_grp_svc_filter}\n")
-			
+	# object-group additions / removals
+	def add(self, *arg): return self._add(*arg)
+	def delete(self, *arg): return self._delete(*arg)
+
+	# String representation of object-group additions / removals
+	def add_str(self, header=True): return self._to_str(self.adders)
+	def del_str(self, header=False): return self._to_str(self.removals)
+
+
+	# ---------------- Operate on a Copy --------------- 	
+
 	# create and return a copy of original instance
 	def _blank_copy_of_self(self):
 		obj_grp = OBJ(self._name, self._hash*1)
 		obj_grp.set_instance_primary_details(self.grp_details)
 		return obj_grp
 
-	# compare and return difference between parent instance,
-	# provided obj/instance in dictionary format
+
+	# ~~~~~~~~~~~~~~~~~~~ INTERNALS / SUPPORTIVE ~~~~~~~~~~~~~~~~~~~
+
+	# supporting len() : count of total members
+	def _len_of_members(self):
+		l = 0
+		for v in self._repr_dic.values():
+			l += len(v)
+		return l
+
+	# supporting - x in/not in instance: 
+	# check existance of member(s) in object instance
+	def _contains(self, member):
+		if isinstance(member, (str, int)):
+			member_type = self._get_member_type(member)
+			member_obj = get_member_obj(member_type, member, self.parent)
+			if isinstance(member_obj, Host):
+				member_obj = Network(member_obj.split()[-1])
+			if not self[member_type]: return None
+			for _ in self[member_type]:
+				if member_obj == _: 
+					return _
+				elif isinstance(_, ObjectGroup):
+					if self.parent[_.group_name]._contains(member):
+						return _
+		elif isinstance(member, (list,set,tuple)):
+			for m in member:
+				if m not in self: return False
+			return True
+
+	# supporting inst.add(member) : method for setting key/value for instance
+	def _add(self, item):
+		if isinstance(item, (tuple, set, list)):
+			for _ in item:  self._add(_)
+		elif isinstance(item, (str, int)):
+			item_type = self._get_member_type(item)
+			updated_item = self._get_item_object(item_type, item)
+			self._obj_add(item_type, updated_item)
+		else:
+			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
+		return self
+
+	# supporting inst.delete(member) : method for removing key/value for instance
+	def _delete(self, item):
+		if isinstance(item, (tuple, set, list)):
+			for _ in item: self._delete(_)
+		elif isinstance(item, (str, int)):
+			item_type = self._get_member_type(item)
+			updated_item = self._get_item_object(item_type, item)
+			self._obj_delete(item_type, updated_item)
+		else:
+			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
+		return self
+
+	# supporting in comparision between to instances (a > b, a < b):
+	# compare and return differences in dictionary,
 	def _missing(self, obj):
 		diffs = {}
 		t = self.obj_grp_type == obj.obj_grp_type
 		s = self.obj_grp_svc_filter == obj.obj_grp_svc_filter
 		if not t or not s:
-			# print("Mismatched-GroupType-or-ServiceFilter")
 			return diffs
 
 		for self_k, self_v in self._repr_dic.items():
@@ -251,52 +277,29 @@ class OBJ(Singulars):
 				diffs[self_k] = self_v.difference(obj_v)
 		return diffs
 
-	# supporting method for setting key/value for instance
-	def _add(self, item_type, item):
-			### ERRORS THERE, item mandatory,itemtype shold be optional, reevaluate
-		if isinstance(item, (tuple, set, list)):
-			for v in item:  self[item_type] = v
-		elif isinstance(item, (str, int)):
-			updated_item = self._get_item_object(item_type, item)
-			self._obj_add(item_type, updated_item)
-		elif isinstance(item, (Host, Network, ObjectGroup, Ports)):
-			self._obj_add(item_type, item)
-		else:
-			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
 
-	# supporting method for setting key/value for instance
-	def _obj_add(self, item_type, item):
-		try:
-			self._repr_dic[item_type].add(item)
-		except KeyError:
-			self._repr_dic[item_type] = {item, }
-		except:
-			print(f"UnableToAdd- {item_type}:{item}")
-			# raise Exception(f"UnableToAdd- {item_type}:{item}")
+	# ----------------- String repr / supportive --------------- #
 
-	# supporting method for removing key/value for instance ( reevaluation need)
-	def _delete(self, item_type, item=''): 						### ERRORS THERE, item mandatory,itemtype shold be optional, reevaluate
-		if isinstance(item_type, dict): 
-			for k, v in item_type.items(): self._delete(k, v)
-		elif isinstance(item, (tuple, set, list)):
-			for _ in item: self._delete(item_type, _)
-		elif isinstance(item, (str, int)):
-			updated_item = self._get_item_object(item_type, item)
-			self._obj_delete(item_type, updated_item)
-		elif isinstance(item, (Host, Network, ObjectGroup, Ports)):
-			self._obj_delete(item_type, item)
-		else:
-			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
+	# return String representation of object-group header/name line
+	def _group_head(self):
+		return (f"object-group {self.obj_grp_type} {self._name} {self.obj_grp_svc_filter}\n")
 
-	# supporting method for removing key/value for instance
-	def _obj_delete(self, item_type, item):
-		try:
-			self._repr_dic[item_type].remove(item)
-			if len(self._repr_dic[item_type]) == 0:
-				del(self._repr_dic[item_type])
-		except:
-			print(f"NoValidCandidateFoundToRemove-{item_type}: {item}")			
-			# raise Exception(f"NoValidCandidateFoundToRemove-{item_type}: {item}")
+	# return String representation of object-group description line
+	def _group_description(self):
+		return (f" description {self.description}\n")
+
+	# return String representation of object-group ( add/remove )
+	def _to_str(self, dic, header=True):
+		s = self._group_head() if header else ""		
+		m = ''
+		negate = 'no ' if dic is self.removals else ''
+		for _type, candidates in dic.items():
+			for c in candidates:
+				m += f" {negate}{_type} {c}\n"
+		s += m
+		return s if m else m
+
+	## ----------- Other Supportive to Supportives --------- ##
 
 	# supporting method for retriving member-type/member pair for for a member
 	def _get_item_object(self, item_type, item):
@@ -322,8 +325,28 @@ class OBJ(Singulars):
 			raise Exception(f"InvalidGroupMemberType-Noticed-[{obj_type}]\n{spl_line}")
 		return member
 
+	# supporting method for setting key/value for instance
+	def _obj_add(self, item_type, item):
+		if not self.adders.get(item_type): self.adders[item_type] = set()
+		if not self._repr_dic.get(item_type): self._repr_dic[item_type] = set()
+		self._repr_dic[item_type].add(item)
+		self.adders[item_type].add(item)
+
+	# supporting method for removing key/value for instance
+	def _obj_delete(self, item_type, item):
+		if not self.removals.get(item_type): self.removals[item_type] = set()
+		try:
+			self._repr_dic[item_type].remove(item)
+			self.removals[item_type].add(item)
+			if len(self._repr_dic[item_type]) == 0:
+				del(self._repr_dic[item_type])
+		except:
+			print(f"NoValidCandidateFoundToRemove/OrAlreadyRemoved-\n{item_type}: {item}")			
+
 	# dynamic detection of member-type for given member
 	def _get_member_type(self, member):
+		for k, v in MEMBERS_MEMBERTYPES.items():
+			if member in k: return v
 		try:
 			network_member(member, self.parent)
 			return 'network-object'
@@ -334,10 +357,14 @@ class OBJ(Singulars):
 			return 'port-object'
 		except:
 			pass
+		if isinstance(member, str) and member in self.parent:
+			return 'group-object'
 		raise Exception(f"InvalidMemberFound:{member}, unable to generate member type for it.")
 
+
+
 	# ~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~~
-	# USED WHILE INITIATLIZING
+	# USED WHILE INITIATLIZING / PARSER
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	def set_instance_primary_details(self, obj_grp_details):
@@ -352,7 +379,7 @@ class OBJ(Singulars):
 			spl_line = line.lstrip().split()
 			sub_obj_type = spl_line[0]
 			if sub_obj_type == 'description':
-				self.description = sub_obj_type
+				self.description = line[13:]
 				continue
 			member = self._get_member(spl_line[0], spl_line)
 			if not self._repr_dic.get(spl_line[0]): self._repr_dic[spl_line[0]] = set()

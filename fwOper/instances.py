@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from .route import ROUTES
 from .acl import ACLS
@@ -33,6 +32,11 @@ class Instances(Plurals):
 			self._repr_dic['system'] = config_list
 		self.set_objects()
 
+	def __repr__(self):
+		setofinsts = ",\n".join(set(self._repr_dic.keys()))
+		return f'{"-"*40}\n# Dict of Instances listed below:      #\n{"-"*40}\n{setofinsts}\n{"-"*40}'
+
+
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
 	def set_objects(self):
 		"""sets instances details"""
@@ -47,9 +51,15 @@ class Instance(Singulars):
 
 	def __init__(self, instance_name, instance_config_list):
 		super().__init__(instance_name)
-		self._repr_dic['conf_list'] = instance_config_list
-		
+		self.instance_name = instance_name		
+		self._repr_dic['conf_list'] = instance_config_list		
+
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
+	def str(self): 
+		keys = ",\n".join(self.keys())
+		instance = f'An Instance on Firewall named:"{self.instance_name}"'
+		return f'{instance}, with keys as\n{keys}'
+
 	def parse(self):
 		"""parsing through config"""
 		conf_list = self._repr_dic['conf_list']

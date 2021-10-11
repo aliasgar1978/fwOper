@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from nettoolkit import *
 
@@ -24,8 +23,13 @@ def network_group_member(spl_line, idx, objectGroups=None):
 		return Network(*DEFAULT_ROUTE)
 	else: 
 		ao = addressing(spl_line[idx])
-		if type(ao) == IPv6: return Network(spl_line[idx])
-		if type(ao) == IPv4: return Network(spl_line[idx], spl_line[idx+1])
+		if type(ao) == IPv6: 
+			return Network(spl_line[idx])
+		if type(ao) == IPv4: 
+			try:
+				return Network(spl_line[idx], spl_line[idx+1])
+			except:
+				return Network(spl_line[idx])
 	raise Exception(f"UndefinedEndPointTypeDetected: {spl_line}\n{idx}")
 
 def port_group_member(spl_line, idx, objectGroups=None):
@@ -48,7 +52,7 @@ def port_group_member(spl_line, idx, objectGroups=None):
 			pts = None
 			pass													### bypassed temporily
 	elif spl_line[idx] in ICMP:
-		pts = Ports("", spl_line[idx])
+		pts = Ports(spl_line[idx], "")
 	elif spl_line[4] == 'icmp':				### Exceptional match for missing icmp ports
 		pts = Ports("", 'echo')				  # define port as echo in this case
 	elif spl_line[idx] == 'log':

@@ -1,5 +1,5 @@
-
 # ----------------------------------------------------------------------------------------
+from copy import deepcopy
 from abc import abstractclassmethod
 
 # ----------------------------------------------------------------------------------------
@@ -27,10 +27,21 @@ class Common():
 			yield (k, v)
 	def __getitem__(self, item): 
 		return self._repr_dic[item]# if self._repr_dic.get(item) else None
-	def __getattr__(self, attr): return self[attr]
+	def __getattr__(self, attr): 
+		try:
+			return self[attr]
+		except KeyError:
+			raise AttributeError(attr)
 	def __repr__(self): return f'{self.__class__.__name__}[{self._name}]'
 	def keys(self): return self._repr_dic.keys()
 	def values(self): return self._repr_dic.values()
+	def __deepcopy__(self, memo):
+		cls = self.__class__
+		result = cls.__new__(cls)
+		memo[id(self)] = result
+		for k, v in self.__dict__.items():
+			setattr(result, k, deepcopy(v, memo))
+		return result
 
 # ----------------------------------------------------------------------------------------
 class Plurals(Common):
@@ -46,6 +57,7 @@ class Singulars(Common):
 		self._name = name
 	def __setitem__(self, key, value):  self._repr_dic[key] = value
 	def __len__(self):  return len(self._repr_dic.keys())
+	def __str__(self): return self.str()
 	@abstractclassmethod
 	def parse(self): pass
 
