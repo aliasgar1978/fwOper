@@ -28,14 +28,12 @@ class Instances(Plurals):
 
 	def __init__(self, config_list):
 		self._repr_dic = _get_instances_lists_dict(config_list)
+		self.what = "instances"
 		if not self._repr_dic:
 			self._repr_dic['system'] = config_list
 		self.set_objects()
 
-	def __repr__(self):
-		setofinsts = ",\n".join(set(self._repr_dic.keys()))
-		return f'{"-"*40}\n# Dict of Instances listed below:      #\n{"-"*40}\n{setofinsts}\n{"-"*40}'
-
+	def changes(self): pass
 
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
 	def set_objects(self):
@@ -53,6 +51,7 @@ class Instance(Singulars):
 		super().__init__(instance_name)
 		self.instance_name = instance_name		
 		self._repr_dic['conf_list'] = instance_config_list		
+	def __str__(self): return self.str()
 
 	# ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~
 	def str(self): 

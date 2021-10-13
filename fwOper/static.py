@@ -28,4 +28,4 @@ MEMBERS_MEMBERTYPES = {
 	VALID_PROTOCOLS: 'protocol-object',
 }
 
-
+LINE_SNG = f'!{"-"*80}!\n'

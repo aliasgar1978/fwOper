@@ -32,13 +32,12 @@ class ACLS(Plurals):
 	"""
 	def __init__(self, config_list, objs=None):
 		super().__init__()
+		self.what = "access-lists"
 		self.acls_list = access_list_list(config_list)
 		self.set_acl_names()
 		self.set_objects(objs)
 
-	def __repr__(self):
-		setofacls = ",\n".join(set(self._repr_dic.keys()))
-		return f'{"-"*40}\n# Dict of access-lists listed below:  #\n{"-"*40}\n{setofacls}\n{"-"*40}'
+	def changes(self, change): return super().changes('acl', change)
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
 
@@ -92,6 +91,7 @@ class ACL(Singulars):
 		super().__init__(acl_name)
 		self.acl_lines_list = acl_lines_list
 		self.objs = objs
+		self.adds = ''
 		self.removals = ''
 		self._sequence = False
 		self._repr_dic = OrderedDict()
@@ -106,15 +106,7 @@ class ACL(Singulars):
 				return self._to_str(item)
 			except KeyError:
 				return None
-	def __delitem__(self, item):
-		if isinstance(item, slice):
-			for i in reversed(range(*item.indices(len(self)))):
-				self.delete(i)
-		else:
-			try:
-				self.delete(item)
-			except KeyError:
-				return None
+	def __delitem__(self, item): self.delete(item)
 	@property
 	def max(self): return max(self._repr_dic.keys())
 	@property
@@ -124,9 +116,13 @@ class ACL(Singulars):
 	@sequence.setter
 	def sequence(self, seq): self._sequence = seq
 	def __add__(self, attribs):  return self.copy_and_append(attribs)
-	def __iadd__(self, attribs): return self.append(attribs)
 	def __sub__(self, n): return self.copy_and_delete(n)
-	def __isub__(self, n): return self.delete(n)
+	def __iadd__(self, attribs): 
+		self.append(attribs)
+		return self
+	def __isub__(self, n): 
+		self.delete(n)
+		return self
 	def __eq__(self, obj):
 		for k, v in obj:
 			if k in self._repr_dic and self._repr_dic[k] == v: continue
@@ -161,32 +157,48 @@ class ACL(Singulars):
 			s += self[k]
 		return s
 
+	# String representation of object-group additions / removals
+	def add_str(self): return str(self.adds)
+	def del_str(self): return str(self.removals)
+
 	# delete a line in acl:  usage= del(acl_name[n])
-	def delete(self, attribs): 
+	def delete(self, attribs, stop=None, step=1): 
 		if isinstance(attribs, int):
-			self.delete_by_line(attribs)
+			if stop and isinstance(stop, int):
+				s = ''
+				for i in reversed(range(attribs, stop, step)):
+					s += self.delete(i)
+				return s
+			else:
+				return self.delete_by_line(attribs)
 		elif isinstance(attribs, dict):
-			self.delete_by_attribs(attribs)
-		return self
+			return self.delete_by_attribs(attribs)
+		elif isinstance(attribs, slice):
+			for i in reversed(range(*attribs.indices(len(self)))):
+				self.delete(i)
+		else:
+			print(f"Incorrect input to delete {attribs}")
+			return None
 
 	# delete a line in acl:  usage= del(acl_name[n])
 	def delete_by_line(self, line_no):
-		self.removals += self._del_str(line_no)
+		removals = self._del_str(line_no)
+		self.removals += removals
 		self._key_delete(line_no)
 		self._key_deflate(line_no)
+		return removals
 
 	# delete a line in acl by attrib
 	def delete_by_attribs(self, attribs):
 		mv = self._matching_value(attribs)
-		if mv: self.delete_by_line(mv)
-
+		if mv: return self.delete_by_line(mv)
 
 	# insert a line in acl: usage=  aclname[line_no] = attribs
 	def insert(self, line_no, attribs):
 		mv = self._matching_value(attribs)
 		if not mv:
 			self._key_extend(line_no)
-			self._add(line_no, attribs)
+			return self._add(line_no, attribs)
 		else:
 			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
 
@@ -194,10 +206,10 @@ class ACL(Singulars):
 	def append(self, attribs):
 		mv = self._matching_value(attribs)
 		if not mv:
-			self._add(self.max+1, attribs)
+			return self._add(self.max+1, attribs)
 		else:
 			print(f"MatchingEntryAlreadyexistAtLine-{mv}")
-		return self
+
 
 	def has(self, item):
 		"""check matching item in acl object src/dst/port, 
@@ -287,6 +299,9 @@ class ACL(Singulars):
 		attribs = self._update_members(attribs)
 		attribs = self._update_remarks(line_no, attribs)
 		self[line_no] = attribs
+		adds = self._to_str(line_no)
+		self.adds += adds
+		return adds
 
 	# supportive : attributes update as per std source/destination/port/remark
 	def _update_members(self, attribs):

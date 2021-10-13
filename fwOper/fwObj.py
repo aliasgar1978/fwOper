@@ -2,6 +2,8 @@
 from copy import deepcopy
 from abc import abstractclassmethod
 
+from .common import *
+
 # ----------------------------------------------------------------------------------------
 # SHARED Functions
 # ----------------------------------------------------------------------------------------
@@ -46,8 +48,21 @@ class Common():
 # ----------------------------------------------------------------------------------------
 class Plurals(Common):
 	"""collection of objects """		
+	def __repr__(self):
+		setofobjs = ",\n".join(set(self._repr_dic.keys()))
+		return f'{"-"*40}\n# Dict of {self.what} listed below:  #\n{"-"*40}\n{setofobjs}\n{"-"*40}'
 	@abstractclassmethod
 	def set_objects(self): pass
+	def changes(self, what, change):
+		if change.upper() not in ("ADDS", "REMOVALS"): 
+			raise Exception('INCORRECT CHANGE: Valid options are "ADDS/REMOVALS"')
+		s = ''
+		for name, obj in self:
+			if not obj.__dict__[change.lower()]: continue
+			s += heading(what, name, change)
+			f = obj.add_str if change.lower() == 'adds' else obj.del_str
+			s += f()
+		return s	
 
 # ----------------------------------------------------------------------------------------
 class Singulars(Common):

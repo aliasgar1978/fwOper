@@ -55,13 +55,12 @@ class OBJS(Plurals):
 	"""collection of object groups """
 	def __init__(self, config_list):
 		super().__init__()
+		self.what = "object-groups"
 		self.obj_grps_list = _object_group_list(config_list)
 		self._set_obj_grp_basics()
 		self.set_objects()
 
-	def __repr__(self):
-		setofobjs = ",\n".join(set(self._repr_dic.keys()))
-		return f'{"-"*40}\n# Dict of Object groups listed below:  #\n{"-"*40}\n{setofobjs}\n{"-"*40}'
+	def changes(self, change): return super().changes('object-group', change)
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
 
@@ -152,23 +151,31 @@ class OBJ(Singulars):
 		super().__init__(obj_grp_name)
 		self.description = ""
 		self.removals = {}
-		self.adders = {}
+		self.adds = {}
 		self._hash = _hash
-	def __eq__(self, obj):  return not len([x for x in self > obj])
+	def __eq__(self, obj): 
+		return (((self>obj) is None) 
+			and ((obj>self) is None) 
+			# and (self.description == obj.description)
+			)
 	def __len__(self): return self._len_of_members()
 	def __contains__(self, member): return self._contains(member)
-	def __iadd__(self, n): return self._add(n)
-	def __isub__(self, n): return self._delete(n)
+	def __iadd__(self, n): 
+		self._add(n)
+		return self
+	def __isub__(self, n): 
+		self._delete(n)
+		return self
 	def __gt__(self, obj):
 		diffs = self._missing(obj)
 		obj_grp = self._blank_copy_of_self()
 		obj_grp._repr_dic = diffs
-		return obj_grp
+		if diffs: return obj_grp
 	def __lt__(self, obj):
 		diffs = obj._missing(self)
 		obj_grp = self._blank_copy_of_self()
 		obj_grp._repr_dic = diffs
-		return obj_grp
+		if diffs: return obj_grp
 	def __add__(self, attribs): 
 		newobj = deepcopy(self)
 		newobj += attribs
@@ -192,7 +199,7 @@ class OBJ(Singulars):
 	def delete(self, *arg): return self._delete(*arg)
 
 	# String representation of object-group additions / removals
-	def add_str(self, header=True): return self._to_str(self.adders)
+	def add_str(self, header=True): return self._to_str(self.adds)
 	def del_str(self, header=False): return self._to_str(self.removals)
 
 
@@ -237,26 +244,31 @@ class OBJ(Singulars):
 	# supporting inst.add(member) : method for setting key/value for instance
 	def _add(self, item):
 		if isinstance(item, (tuple, set, list)):
-			for _ in item:  self._add(_)
+			s = ''
+			for _ in item:  
+				s += self._add(_)
+			return s
 		elif isinstance(item, (str, int)):
 			item_type = self._get_member_type(item)
 			updated_item = self._get_item_object(item_type, item)
-			self._obj_add(item_type, updated_item)
+			return self._obj_add(item_type, updated_item)
 		else:
-			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
-		return self
+			raise Exception(f"IncorrectIteminItemType-{item}")
+
 
 	# supporting inst.delete(member) : method for removing key/value for instance
 	def _delete(self, item):
 		if isinstance(item, (tuple, set, list)):
-			for _ in item: self._delete(_)
+			s = ''
+			for _ in item: 
+				s += str(self._delete(_))
+			return s
 		elif isinstance(item, (str, int)):
 			item_type = self._get_member_type(item)
 			updated_item = self._get_item_object(item_type, item)
-			self._obj_delete(item_type, updated_item)
+			return self._obj_delete(item_type, updated_item)
 		else:
-			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
-		return self
+			raise Exception(f"IncorrectIteminItemType-{item}")
 
 	# supporting in comparision between to instances (a > b, a < b):
 	# compare and return differences in dictionary,
@@ -327,10 +339,11 @@ class OBJ(Singulars):
 
 	# supporting method for setting key/value for instance
 	def _obj_add(self, item_type, item):
-		if not self.adders.get(item_type): self.adders[item_type] = set()
+		if not self.adds.get(item_type): self.adds[item_type] = set()
 		if not self._repr_dic.get(item_type): self._repr_dic[item_type] = set()
 		self._repr_dic[item_type].add(item)
-		self.adders[item_type].add(item)
+		self.adds[item_type].add(item)
+		return f" {item_type} {item}\n"
 
 	# supporting method for removing key/value for instance
 	def _obj_delete(self, item_type, item):
@@ -340,6 +353,7 @@ class OBJ(Singulars):
 			self.removals[item_type].add(item)
 			if len(self._repr_dic[item_type]) == 0:
 				del(self._repr_dic[item_type])
+			return f" no {item_type} {item}\n"
 		except:
 			print(f"NoValidCandidateFoundToRemove/OrAlreadyRemoved-\n{item_type}: {item}")			
 
