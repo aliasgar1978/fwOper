@@ -19,7 +19,7 @@ __all__ = [
 	# "update_ports_name" ,
 	]
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 from .acl import (ACLS, ACL, ACL_REMARK)
 from .acg import (OBJS, OBJ, get_member_obj)
