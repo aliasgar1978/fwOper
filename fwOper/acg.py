@@ -149,6 +149,7 @@ class OBJ(Singulars):
 
 	def __init__(self, obj_grp_name, _hash):
 		super().__init__(obj_grp_name)
+		self.name = obj_grp_name
 		self.description = ""
 		self.removals = {}
 		self.adds = {}
@@ -224,22 +225,22 @@ class OBJ(Singulars):
 	# supporting - x in/not in instance: 
 	# check existance of member(s) in object instance
 	def _contains(self, member):
-		if isinstance(member, (str, int)):
+		if isinstance(member, (str, int, Network, Ports)):
 			member_type = self._get_member_type(member)
 			member_obj = get_member_obj(member_type, member, self.parent)
-			if isinstance(member_obj, Host):
-				member_obj = Network(member_obj.split()[-1])
-			if not self[member_type]: return None
+			if not self._repr_dic.get(member_type): return None
 			for _ in self[member_type]:
-				if member_obj == _: 
-					return _
-				elif isinstance(_, ObjectGroup):
+				if isinstance(_, ObjectGroup):
 					if self.parent[_.group_name]._contains(member):
 						return _
+				else: pass
+				if member_obj == _:  return _
 		elif isinstance(member, (list,set,tuple)):
 			for m in member:
 				if m not in self: return False
 			return True
+		else:
+			print(type(member))
 
 	# supporting inst.add(member) : method for setting key/value for instance
 	def _add(self, item):
@@ -280,6 +281,8 @@ class OBJ(Singulars):
 			return diffs
 
 		for self_k, self_v in self._repr_dic.items():
+			if not obj._repr_dic.get(self_k):
+				obj._repr_dic[self_k] = None
 			obj_v = obj[self_k]
 			if obj_v is None:
 				diffs[self_k] = self_v
@@ -396,7 +399,8 @@ class OBJ(Singulars):
 				self.description = line[13:]
 				continue
 			member = self._get_member(spl_line[0], spl_line)
-			if not self._repr_dic.get(spl_line[0]): self._repr_dic[spl_line[0]] = set()
+			if not self._repr_dic.get(spl_line[0]): 
+				self._repr_dic[spl_line[0]] = set()
 			self._repr_dic[spl_line[0]].add(member)
 
 	# ~~~~~~~~~~~~~~~~~~~ PROPERTIES ~~~~~~~~~~~~~~~~~~~
@@ -411,6 +415,11 @@ class OBJ(Singulars):
 		}
 		return _grp_details
 	
+	def is_in(self, acls):		
+		for acl in acls:
+			pass
+
+
 
 
 # ----------------------------------------------------------------------------------------

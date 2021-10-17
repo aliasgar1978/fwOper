@@ -190,12 +190,15 @@ class ACL(Singulars):
 
 	# delete a line in acl by attrib
 	def delete_by_attribs(self, attribs):
-		mv = self._matching_value(attribs)
-		if mv: return self.delete_by_line(mv)
+		mv = self.contains(attribs)
+		s = ''
+		for i in reversed(sorted(mv)):
+			s += self.delete_by_line(i)
+		return s
 
 	# insert a line in acl: usage=  aclname[line_no] = attribs
 	def insert(self, line_no, attribs):
-		mv = self._matching_value(attribs)
+		mv = self.contains(attribs)
 		if not mv:
 			self._key_extend(line_no)
 			return self._add(line_no, attribs)
@@ -204,7 +207,7 @@ class ACL(Singulars):
 
 	# append a line in acl: 
 	def append(self, attribs):
-		mv = self._matching_value(attribs)
+		mv = self.contains(attribs)
 		if not mv:
 			return self._add(self.max+1, attribs)
 		else:
@@ -227,25 +230,25 @@ class ACL(Singulars):
 				return line_no
 		return False
 
-	def contains(self, item, all=False):
+	def contains(self, item):
 		"""check matching attributes in acl object, 
 		return matching acl line numbers list (all matching lines)
 		"""
-		matching_lines = []
+		matching_lines = set()
 		item = self._update_group_members(item)
-		item = self._network_to_host(item)
+		# item = self._network_to_host(item)
 		for line_no, acl_details in  self:
 			if isinstance(acl_details, dict):
-				for k, v in item.items():
-					if k == 'log_warning': continue
-					if isinstance(acl_details[k], ObjectGroup) and isinstance(v, OBJ):
-						if len(acl_details[k].grp > v): break
-					elif acl_details[k] != v:
-						break
+				for item_k, item_v in item.items():
+					if item_k == 'log_warning': continue
+					if isinstance(acl_details[item_k], OBJ):
+						if item_v not in acl_details[item_k]: break
+						continue
+					if item_v != acl_details[item_k]: break
 				else:
-					if not all: return line_no
-					matching_lines.append(line_no)
+					matching_lines.add(line_no)
 		return matching_lines
+
 
 
 	# ---------------- Operate on a Copy --------------- 	
@@ -306,7 +309,6 @@ class ACL(Singulars):
 	# supportive : attributes update as per std source/destination/port/remark
 	def _update_members(self, attribs):
 		attribs = self._update_group_members(attribs)
-		attribs = self._network_to_host(attribs)
 		return attribs
 
 	# supportive : attributes update for remark field
@@ -317,18 +319,23 @@ class ACL(Singulars):
 
 	# supportive : attributes update as per std source/destination/port
 	def _update_group_members(self, attribs):
-		attribs['source'] = network_group_member(attribs['source'].split(), idx=0, objectGroups=self.objs)
-		attribs['destination'] = network_group_member(attribs['destination'].split(), idx=0, objectGroups=self.objs)
-		attribs['ports'] = port_group_member(attribs['ports'].split(), idx=0, objectGroups=self.objs)
+		sdps = {'source', 'destination', 'ports'}
+		for sdp in sdps:
+			self._update_an_attrib(attribs, sdp)
 		return attribs
 
-	# supportive : attributes change from Network to Host 
-	def _network_to_host(self, attribs):
-		for k,v in attribs.items():
-			if isinstance(v, Network):
-				spl_v = str(v).split()
-				attribs[k] = Host(spl_v[0])
-		return attribs	
+	def _update_an_attrib(self, attribs, sdp):
+		f = port_group_member if sdp == 'ports' else network_group_member
+		if isinstance(attribs[sdp], (set, tuple, list)):
+			self._update_set_attribs(attribs, sdp, f)
+		else:
+			attribs[sdp] = f(str(attribs[sdp]).split(), idx=0, objectGroups=self.objs)
+
+	def _update_set_attribs(self, attribs, sdp, f):
+		s = set()
+		for _sdp in attribs[sdp]:
+			s.add(f(str(_sdp).split(), idx=0, objectGroups=self.objs))
+		attribs[sdp] = s
 
 	# ----------------- String repr / supportive --------------- #
 
@@ -342,12 +349,25 @@ class ACL(Singulars):
 				if v not in item:
 					item[v] = self._normalize(v)
 			log_warning = " log warning" if item['log_warning'] else ""
+			src = self.update_obj_grp_str(item, 'source')
+			dst = self.update_obj_grp_str(item, 'destination')
+			pt =  self.update_obj_grp_str(item, 'ports')
+			prt =  self.update_obj_grp_str(item, 'protocol')
 			s = (f"access-list {self._name} {seq_no}"
-				 f"{item['acl_type']} {item['action']} {item['protocol']} "
-				 f"{item['source']} {item['destination']} {item['ports']}{log_warning}\n")
+				 f"{item['acl_type']} {item['action']} {prt} "
+				 f"{src} {dst} {pt}{log_warning}\n")
 		else:
 			s = f"access-list {self._name} {seq_no}{item}"
 		return s
+
+	@staticmethod
+	def update_obj_grp_str(item, what):
+		if isinstance(item[what], OBJ):
+			return 'object-group ' + item[what].name
+		if isinstance(item[what], Network) and item[what].host:
+			return 'host ' +  item[what].network
+		else:
+			return item[what]
 
 	# return negating string of an acl-line (n)
 	# usage: del(acl[n:n+x:step]) to delete acl entry(ies).
@@ -363,17 +383,6 @@ class ACL(Singulars):
 		return s 
 
 	## ----------- Other Supportive to Supportives --------- ##
-
-	# line number of an acl for matching attributes
-	def _matching_value(self, attribs):
-		attribs = self._update_members(attribs)
-		for line_no, acl_details in self:
-			match = False
-			for k_attr, v_attr in attribs.items():
-				if isinstance(acl_details, ACL_REMARK): break
-				match = acl_details[k_attr] == v_attr
-				if not match: break
-			if match: return line_no
 
 	# return default attributes for the require item/attribute.
 	def _normalize(self, item):
@@ -432,6 +441,49 @@ class ACL(Singulars):
 				'ports': ports,
 				'log_warning': STR.found(line, 'log warnings'),
 			}
+
+	def exact(self, item):
+		"""check matching attributes in acl object, 
+		return matching acl line numbers list (all matching lines)
+		"""
+		matching_lines = set()
+		item = self._update_group_members(item)
+		# item = self._network_to_host(item)
+		for line_no, acl_details in  self:
+			if isinstance(acl_details, dict):
+				for item_k, item_v in item.items():
+					if item_k == 'log_warning': continue
+					if isinstance(acl_details[item_k], OBJ):
+						dg_rdk = dummy_group(acl_details[item_k], item_k, item_v)
+						try:
+							if dg_rdk != acl_details[item_k]: 
+								break
+						except:
+							print(line_no)
+							print(acl_details)
+							print(item_k)
+							print(item_v)
+							raise Exception
+						continue
+					if item_v != acl_details[item_k]: break
+				else:
+					matching_lines.add(line_no)
+		return matching_lines
+
+# create a dummy object-group with provided items, by taking template as source group
+def dummy_group(source_grp, item, values):
+	v = values if isinstance(values, (set, tuple, list)) else {values,}
+	dg = OBJ('temporary', 1)
+	if item in ('protocol',):rdk = 'protocol-object'
+	if item in ('ports',):rdk = 'port-object'
+	if item in ('source', 'destination'): rdk = 'network-object'
+	ogd = {}
+	ogd['candiates_list'] = ''
+	ogd['type'] = source_grp.obj_grp_type
+	ogd['svc_filter'] = source_grp.obj_grp_svc_filter
+	dg.set_instance_primary_details(ogd)
+	dg._repr_dic[rdk] = v
+	return dg
 
 # ----------------------------------------------------------------------------------------
 # Access List Entry Candidates

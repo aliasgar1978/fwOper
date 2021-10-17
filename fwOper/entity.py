@@ -22,29 +22,29 @@ class Singular(EntiryProperties):
 IcmpProtocol = Singular
 NetworkProtocol = Singular
 
-class Host(EntiryProperties):
-	"""a single ip host object 	"""
-	def __init__(self, host):
-		self._iphost = addressing(host)
-		self._str = f"host {host}"
-		self._hash = hash(self._iphost)
-		self.version = self._iphost.version
-	def split(self): return str(self._iphost).split()
 
 class Network(EntiryProperties):
 	"""a network/subnet object 	"""
 	def __init__(self, network, dotted_mask=None): 
 		if dotted_mask:
 			self.mask = to_dec_mask(dotted_mask)
-			self._subnet = network + "/" + str(self.mask)
+			self.network = network + "/" + str(self.mask)
 		else:
-			self._subnet = network
-		self._network = addressing(self._subnet)
+			self.network = network
+			self.mask = None
+		self._network = addressing(self.network)
 		self.version = self._network.version
+		if self.version == 6 and not self.mask: 
+			self.mask = 128
+		if self.version == 4 and not self.mask: 
+			self.mask = 32
+		self.host = ((self.mask == 32 and self.version == 4)
+			or (self.mask == 128 and self.version == 6))
 		self._hash = hash(self._network)
 	@property
 	def _str(self):
-		net = self._network.ipbinmask()
+		if self.version == 4: net = self._network.ipbinmask()
+		if self.version == 6: net = self._network.network + "/" + str(self.mask)
 		if net in any4: return 'any4'
 		if net in any6: return 'any6'
 		return net
@@ -54,11 +54,11 @@ class ObjectGroup(EntiryProperties):
 	def __init__(self, group_name, objectGroups): 
 		self.group_name = group_name
 		try:
-			grp = objectGroups[group_name]
+			self.grp = objectGroups[group_name]
 		except:
 			raise Exception("ObjectGroupNotPresent")
 		self._str = f"object-group {self.group_name}"
-		self._hash = grp._hash
+		self._hash = self.grp._hash
 
 class Ports(EntiryProperties):
 	"""a port/range-of-ports object """

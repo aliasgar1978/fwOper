@@ -13,7 +13,8 @@ __all__ = [
 	"get_object",
 	"network_group_member", "port_group_member",
 
-	# "HOST", "NETWORK", "OBJ_GROUP", "PORTS",
+	# "HOST", 
+	"NETWORK", "OBJ_GROUP", "PORTS",
 	# "ANY", "ICMP", "DEFAULT_ROUTE", "VALID_PROTOCOLS", 
 	# 'network_member', 'port_member', "get_match_dict",
 	# "update_ports_name" ,
@@ -27,3 +28,4 @@ from .route import (ROUTES, ROUTE)
 from .instances import (Instances)
 from .fwObj import get_object
 from .member import network_group_member, port_group_member
+from .entity import *

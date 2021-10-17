@@ -12,24 +12,23 @@ def network_group_member(spl_line, idx, objectGroups=None):
 	provide index to look at, 
 	objectGroups will require if splitted line has object-group.
 	"""
-	if spl_line[idx] == 'host':
-		return Host(spl_line[idx+1])
-	elif spl_line[idx] == 'object-group':
+	if spl_line[idx] == 'object-group':
 		try:
-			return ObjectGroup(spl_line[idx+1], objectGroups)		## TBD pass objectGroups
+			return objectGroups[spl_line[idx+1]]
 		except:
 			return None
 	elif spl_line[idx] in ANY:
 		return Network(*DEFAULT_ROUTE)
-	else: 
-		ao = addressing(spl_line[idx])
-		if type(ao) == IPv6: 
-			return Network(spl_line[idx])
-		if type(ao) == IPv4: 
+	else:
+		address = spl_line[idx+1] if spl_line[idx] == 'host' else spl_line[idx]
+		ao = addressing(address)
+		if type(ao) == IPv6:
+			return Network(address)
+		if type(ao) == IPv4:
 			try:
-				return Network(spl_line[idx], spl_line[idx+1])
+				return Network(address, spl_line[idx+1])
 			except:
-				return Network(spl_line[idx])
+				return Network(address)
 	raise Exception(f"UndefinedEndPointTypeDetected: {spl_line}\n{idx}")
 
 def port_group_member(spl_line, idx, objectGroups=None):
@@ -93,7 +92,6 @@ def network_member(network, objs=None):
 		net_obj = addressing(network)
 		if net_obj:
 			mask = int(spl_network[1]) 
-			if mask == 32: return Host(spl_network[0])
 			return Network(spl_network[0], bin_mask(mask))
 	# ----------------------------------------------------
 	spl_network = network.split(" ")
@@ -103,15 +101,15 @@ def network_member(network, objs=None):
 		net = spl_network[0] +"/"+ str(mask)
 		net_obj = addressing(net)
 		if net_obj: 
-			if mask == 32: return Host(spl_network[0])
 			return Network(spl_network[0], spl_network[1])
 	# ----------------------------------------------------
 	else:
 		subnet = network + "/32"
 		net_obj = addressing(network)
-		if net_obj: return Host(network)
+		if net_obj:
+			return Network(network, '255.255.255.255')
 	# ----------------------------------------------------
-	raise Exception(f"InvalidNetworkOrHost")
+	raise Exception(f"InvalidNetwork")
 
 def port_member(port, objs):
 	"""returns Port group member object for given port, 

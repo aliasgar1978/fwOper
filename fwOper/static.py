@@ -28,4 +28,6 @@ MEMBERS_MEMBERTYPES = {
 	VALID_PROTOCOLS: 'protocol-object',
 }
 
+GROUP_VALID_FIELDS = {'source', 'destination', 'ports', 'protocol'}
+
 LINE_SNG = f'!{"-"*80}!\n'
