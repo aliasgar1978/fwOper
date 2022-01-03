@@ -4,9 +4,11 @@ from nettoolkit import *
 from .static import *
 
 # ----------------------------------------------------------------------------------------
-# Control Classes
+# Parents Classes
 # ----------------------------------------------------------------------------------------
 class EntiryProperties():
+	"""Common properties/methods for individual entities
+	"""
 	def __str__(self): return self._str
 	def __repr__(self): return self._str
 	def __hash__(self): return self._hash
@@ -14,6 +16,9 @@ class EntiryProperties():
 
 class Singular(EntiryProperties):
 	"""a common class template to create an IcmpProtocol or NetworkProtocol object instance 
+
+	Args:
+		EntiryProperties (EntiryProperties): Common properties/methods for individual entities
 	"""
 	def __init__(self, _type):
 		self._type = _type
@@ -22,9 +27,16 @@ class Singular(EntiryProperties):
 IcmpProtocol = Singular
 NetworkProtocol = Singular
 
+# ----------------------------------------------------------------------------------------
+# Control Classes
+# ----------------------------------------------------------------------------------------
 
 class Network(EntiryProperties):
-	"""a network/subnet object 	"""
+	"""a network/subnet object
+
+	Args:
+		EntiryProperties (EntiryProperties): Common properties/methods for individual entities
+	"""
 	def __init__(self, network, dotted_mask=None): 
 		if dotted_mask:
 			self.mask = to_dec_mask(dotted_mask)
@@ -32,46 +44,65 @@ class Network(EntiryProperties):
 		else:
 			self.network = network
 			self.mask = None
+		self.host = False
+		self.address_it()
+
+	def address_it(self):
+		"""set addressing object and a few basic variables.
+		"""
 		self._network = addressing(self.network)
-		self.version = self._network.version
-		if self.version == 6 and not self.mask: 
-			self.mask = 128
-		if self.version == 4 and not self.mask: 
-			self.mask = 32
-		self.host = ((self.mask == 32 and self.version == 4)
-			or (self.mask == 128 and self.version == 6))
 		self._hash = hash(self._network)
+		self.version = self._network.version
+		if self.version == 4 and (not self.mask or self.mask == 32):  
+			self.mask = 32
+			self.host = True
+		if self.version == 6 and (not self.mask or self.mask == 128):
+			self.mask = 128
+			self.host = True
+
 	@property
 	def _str(self):
+		"""string property for the self object
+
+		Returns:
+			str: string representation of self
+		"""
 		if self.version == 4: net = self._network.ipbinmask()
 		if self.version == 6: net = self._network.network + "/" + str(self.mask)
 		if net in any4: return 'any4'
 		if net in any6: return 'any6'
+		if self.host: net = net.split(" ")[0].split("/")[0]
 		return net
 
-class ObjectGroup(EntiryProperties):
-	"""networks/ports grouped object """
-	def __init__(self, group_name, objectGroups): 
-		self.group_name = group_name
-		try:
-			self.grp = objectGroups[group_name]
-		except:
-			raise Exception("ObjectGroupNotPresent")
-		self._str = f"object-group {self.group_name}"
-		self._hash = self.grp._hash
-
+# ----------------------------------------------------------------------------------------
 class Ports(EntiryProperties):
-	"""a port/range-of-ports object """
+	"""a port/range-of-ports object
+
+	Args:
+		EntiryProperties (EntiryProperties): Common properties/methods for individual entities
+	"""
 	def __init__(self, port_type, port, port_range_end='', objectGroups=None): 
 		self._set_porttype(port_type)
-		# print(">", self.port_type)
 		self._set_ports(port, port_range_end, objectGroups)
-		# print(">>", self.start, ">>", self.end)
 		self._hash = hash(port)
 
-	def split(self): return str(self).split()
+	def split(self):
+		"""split the port string to a list
+
+		Returns:
+			list: port string splitted
+		"""
+		return str(self).split()
 
 	def _set_porttype(self, port_type):
+		"""port type validations
+
+		Args:
+			port_type (str): various port types (ex: eq, range, ...)
+
+		Raises:
+			Exception: InvalidPortType
+		"""
 		if port_type in VALID_PORT_MATCHES:
 			self.port_type = port_type
 			if port_type in ICMP:
@@ -87,7 +118,12 @@ class Ports(EntiryProperties):
 			raise Exception(f"InvalidPortType{port_type}, Valid options are {VALID_PORT_MATCHES}")
 
 	def _set_mapped_port_numbers(self, start, end):
-		# print("___", start, "____", end)
+		"""port numbers (start, end) validations
+
+		Args:
+			start (str): range start number/ or port number
+			end (str): range end number
+		"""
 		for k, v in PORT_MAPPINGS.items():
 			if v == start: 
 				self.start = int(k)
@@ -99,13 +135,23 @@ class Ports(EntiryProperties):
 		except: self.start = ''
 
 	def _set_ports(self, start, end, objectGroups):
+		"""port number validations including object groups
+
+		Args:
+			start (str, int): start number of range of ports
+			end (str, int): end number of range of ports
+			objectGroups (str): object-group name
+
+		Returns:
+			None: None
+		"""
 		if not self.port_type: return None
 		if start in PORT_MAPPINGS.values() or end in PORT_MAPPINGS.values():
 			self._set_mapped_port_numbers(start, end)
 			return
 		if self.port_type == 'object-group':
 			self.end = ''
-			self.start = ObjectGroup(start, objectGroups)
+			self.start = objectGroups(start)
 			return
 		try:
 			self.start = int(start)
@@ -118,6 +164,11 @@ class Ports(EntiryProperties):
 
 	@property
 	def _str(self):
+		"""string representation of self
+
+		Returns:
+			str: string representation of self
+		"""
 		port = PORT_MAPPINGS[self.start] if self.start in PORT_MAPPINGS else self.start
 		port_end = PORT_MAPPINGS[self.end] if self.end in PORT_MAPPINGS else self.end
 		port_end = f' {port_end}' if port_end else ''
@@ -125,6 +176,14 @@ class Ports(EntiryProperties):
 		return f'{port_type}{port}{port_end}'.strip()
 
 	def __contains__(self, port):
+		"""validates if provided port is part of port members
+
+		Args:
+			port (int): port number
+
+		Returns:
+			bool: if port is within port members
+		"""
 		end = self.start if not self.end else self.end
 		for k, v in PORT_MAPPINGS.items():
 			if v == port: port = k
@@ -133,6 +192,16 @@ class Ports(EntiryProperties):
 		except:
 			print(f"Invalid Port to check within [{self.start} <= {port} <= {end}]")
 
+# ----------------------------------------------------------------------------------------
+
+class ACL_REMARK():
+	"""ACL remark entity object
+	"""
+	def __init__(self, remark): self.remark = remark
+	def __str__(self): return self.str()
+	def __repr__(self): return self.remark
+	def __eq__(self, obj): return str(obj) == str(self)
+	def str(self): return self.remark + "\n"
 
 # ----------------------------------------------------------------------------------------
 #   Main

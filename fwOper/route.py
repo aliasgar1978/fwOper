@@ -4,15 +4,25 @@ from nettoolkit import *
 
 from .fwObj import *
 # ----------------------------------------------------------------------------------------
+
 def routes_list(config_list):
-	"""list of lines with static routes from given config-list """
+	"""list of lines with static routes from given config-list
+
+	Args:
+		config_list (list): firewall (instance) configuration list
+
+	Returns:
+		list: routes
+	"""
 	return [line.rstrip() for line in config_list if line.startswith("route ")]
 
 # ----------------------------------------------------------------------------------------
 # Static Route Entries
 # ----------------------------------------------------------------------------------------
+
 class ROUTES():
-	"""collection of object of Routes """
+	"""collection of object of Routes
+	"""
 	def __init__(self, config_list):
 		############ To be moved over to custom deployment #############
 		# self.cfg_interface_group_list = interface_group_list(config_list)
@@ -35,13 +45,25 @@ class ROUTES():
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
 
 	def str(self):
+		"""string representation of self
+
+		Returns:
+			str: all routes
+		"""
 		s = ''
 		for k in self.routes_list:
 			s += k.str()
 		return s
 
 	def prefix(self, network):
-		"""check matching network in ROUTES object, return matching route """
+		"""check matching network in ROUTES object, return longest matching route
+
+		Args:
+			network (str): ip-address/subnet
+
+		Returns:
+			Route: matching Route object (longest match)
+		"""
 		route_match = None
 		for sn in reversed(self):
 			if network in sn:
@@ -50,7 +72,8 @@ class ROUTES():
 		if route_match: return route_match
 
 	def get_route_objects(self):
-		"""set ROUTE objects in self instance """
+		"""set ROUTE objects in self-Routes instance
+		"""
 		for route_line in self.cfg_routes_list:
 			route =  ROUTE(route_line)
 			route.parse()
@@ -63,27 +86,34 @@ class ROUTES():
 # ----------------------------------------------------------------------------------------
 # Static Route Details
 # ----------------------------------------------------------------------------------------
-class ROUTE(Singulars):
-	"""Individual static-route object
-	** Properties can be accessible for ROUTE object **
-	(network, nexthop, ifdesc, distance)
-	"""
 
+
+class ROUTE(Singulars):
+	"""Individual static-route object, 
+	
+	Properties: 
+		(network, nexthop, ifdesc, distance)
+
+	Args:
+		Singulars (Singulars): inherits Singulars object properties/methods
+	"""
 	def __init__(self, route_line):
 		super().__init__()
 		self.route_line = route_line
 		self._repr_dic = OrderedDict()
 		self._repr_dic = {'ifdesc':'', 'nexthop':'', 'distance':'', 'network':'', }
-
 	def __contains__(self, network): return isSubset(network, self.network)
 
 	# ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~
 
-	# return String representation of routes
-	def str(self): return self.route_line + "\n"
+	def str(self):
+		""" return String representation of routes
+		""" 
+		return self.route_line + "\n"
 
 	def parse(self):
-		"""parse static route line and set route_dict """
+		"""parse static route line and set route_dict
+		"""
 		spl_route_line = self.route_line.split()
 		self._repr_dic['ifdesc'] = spl_route_line[1]
 		self._repr_dic['nexthop'] = spl_route_line[4]

@@ -37,7 +37,7 @@ if file == file1:
 	# print(routes.prefix(pfx2).route_line)	# string prop ( object work without it )
 
 	print(dir(routes))
-	print([x for x in routes.routes_list])
+	print( routes )
 
 
 # ==================================================================================

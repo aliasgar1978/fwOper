@@ -8,8 +8,19 @@ from .common import *
 # SHARED Functions
 # ----------------------------------------------------------------------------------------
 def get_object(obj, file=None, conf_list=None, **kwargs):
-	"""Pre-defined set of steps to get objects. 
-	( either input require file/conf_list ;  preferred conf_list )"""
+	"""Pre-defined set of steps to get objects.  ( either input require file/conf_list ;  preferred conf_list )
+
+	Args:
+		obj (OBJS, ACLS, ROUTES,INSTANCES): various objects type
+		file (str, optional): file name with path. Defaults to None.
+		conf_list (list, optional): configuration content in list format. Defaults to None.
+
+	Raises:
+		Exception: MissingMandatoryInput
+
+	Returns:
+		object: object
+	"""
 	if file is not None:
 		with open(file, 'r') as f:
 			conf_list = f.readlines()
@@ -22,7 +33,8 @@ def get_object(obj, file=None, conf_list=None, **kwargs):
 # SHARED Classes
 # ----------------------------------------------------------------------------------------
 class Common():
-	"""Commons methods of object/objects"""		
+	"""Commons properties/methods for Singular/Plural objects
+	"""
 	def __init__(self): self._repr_dic = {}
 	def __iter__(self):
 		for k, v in self._repr_dic.items():
@@ -47,15 +59,33 @@ class Common():
 
 # ----------------------------------------------------------------------------------------
 class Plurals(Common):
-	"""collection of objects """		
+	"""collection of objects 
+
+	Args:
+		Common (Common): Inherits Commons properties/methods for Singular/Plural objects
+	"""
 	def __repr__(self):
 		setofobjs = ",\n".join(set(self._repr_dic.keys()))
 		return f'{"-"*40}\n# Dict of {self.what} listed below:  #\n{"-"*40}\n{setofobjs}\n{"-"*40}'
+
 	@abstractclassmethod
-	def set_objects(self): pass
+	def set_objects(cls): pass
+
 	def changes(self, what, change):
+		"""collate the recorded delta changes and provide delta for that change ( "ADDS", "REMOVALS" )
+
+		Args:
+			what (str): where to look for the change ('acl', 'object-group')
+			change (str): type of change for which change output requested ( "ADDS", "REMOVALS" )
+
+		Raises:
+			Exception: INCORRECTCHANGE
+
+		Returns:
+			str: delta changes
+		"""
 		if change.upper() not in ("ADDS", "REMOVALS"): 
-			raise Exception('INCORRECT CHANGE: Valid options are "ADDS/REMOVALS"')
+			raise Exception('INCORRECTCHANGE: Valid options are "ADDS/REMOVALS"')
 		s = ''
 		for name, obj in self:
 			if not obj.__dict__[change.lower()]: continue
@@ -66,7 +96,11 @@ class Plurals(Common):
 
 # ----------------------------------------------------------------------------------------
 class Singulars(Common):
-	"""One of object """		
+	"""a single object
+
+	Args:
+		Common (Common): Inherits Commons properties/methods for Singular/Plural objects
+	"""
 	def __init__(self, name=''):
 		super().__init__()
 		self._name = name
@@ -74,6 +108,6 @@ class Singulars(Common):
 	def __len__(self):  return len(self._repr_dic.keys())
 	def __str__(self): return self.str()
 	@abstractclassmethod
-	def parse(self): pass
+	def parse(cls): pass
 
 # ----------------------------------------------------------------------------------------
