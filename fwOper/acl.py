@@ -559,7 +559,10 @@ class ACL(Singulars):
 			dict: updated attributes
 		"""
 		if not attribs.get('remark') :
-			attribs['remark'] = self._repr_dic[n-1]['remark']
+			try:
+				attribs['remark'] = self._repr_dic[n-1]['remark']
+			except:
+				attribs['remark'] = str(self._repr_dic[n-1])
 		return attribs
 
 	def _update_group_members(self, attribs):
@@ -718,7 +721,6 @@ class ACL(Singulars):
 					if spl_line[pv] in ANY: idx_variance -= 1
 				except:
 					pass
-			# add rest statics and create ACL entry dict
 			self._repr_dic[line_no] = {
 				'remark': remark,
 				'acl_type': spl_line[2],

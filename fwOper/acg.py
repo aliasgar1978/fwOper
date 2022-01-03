@@ -401,6 +401,7 @@ class OBJ(Singulars):
 			updated_item = self._get_item_object(item_type, item)
 			return self._obj_add(item_type, updated_item)
 		else:
+			item_type = self._get_member_type(item)
 			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
 
 	def _delete(self, item):
@@ -425,6 +426,7 @@ class OBJ(Singulars):
 			updated_item = self._get_item_object(item_type, item)
 			return self._obj_delete(item_type, updated_item)
 		else:
+			item_type = self._get_member_type(item)
 			raise Exception(f"IncorrectIteminItemType-{item_type}/{item}")
 
 	def _missing(self, obj):

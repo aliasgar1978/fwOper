@@ -203,6 +203,31 @@ class ACL_REMARK():
 	def __eq__(self, obj): return str(obj) == str(self)
 	def str(self): return self.remark + "\n"
 
+
+# ----------------------------------------------------------------------------------------
+#  DUMMY BLANK OBJECT GOUPs
+# ----------------------------------------------------------------------------------------
+
+class NetworkObject():
+	obj_grp_type = 'network'
+	obj_grp_svc_filter = ''
+
+class UDPPortObject(Singular):
+	obj_grp_type = 'service'
+	obj_grp_svc_filter = 'udp'
+
+class TCPPortObject(Singular):
+	obj_grp_type = 'service'
+	obj_grp_svc_filter = 'tcp'
+
+class ProtocolObject(Singular):
+	obj_grp_type = 'protocol'
+	obj_grp_svc_filter = ''
+
+class ICMPPortObject(Singular):
+	obj_grp_type = 'icmp-type'
+	obj_grp_svc_filter = ''
+
 # ----------------------------------------------------------------------------------------
 #   Main
 # ----------------------------------------------------------------------------------------

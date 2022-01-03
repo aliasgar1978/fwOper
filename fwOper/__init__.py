@@ -6,23 +6,22 @@ operations
 '''
 
 __all__ = [
-	"ACLS", "ACL", "ACL_REMARK",
+	"ACLS", "ACL", "dummy_group",
 	"OBJS", "OBJ", 'get_member_obj', 
 	"ROUTES", "ROUTE",
 	"INSTANCES",
 	"get_object",
 	"network_group_member", "port_group_member",
 
-	# "HOST", 
 	"NETWORK", "OBJ_GROUP", "PORTS",
-	# "ANY", "ICMP", "DEFAULT_ROUTE", "VALID_PROTOCOLS", 
-	# 'network_member', 'port_member', "get_match_dict",
-	# "update_ports_name" ,
+
+	"NetworkObject", "UDPPortObject", "TCPPortObject", "ProtocolObject", "ICMPPortObject",
+
 	]
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
-from .acl import (ACLS, ACL, ACL_REMARK)
+from .acl import (ACLS, ACL, dummy_group)
 from .acg import (OBJS, OBJ, get_member_obj)
 from .route import (ROUTES, ROUTE)
 from .instances import (Instances)
