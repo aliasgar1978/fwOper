@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fwOper.acl &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_preface.html">1. fwOper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_install.html">2. Installation &amp; Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_user_doc.html">3. User documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tech_doc.html">4. Technical documentation!</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>fwOper.acl</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fwOper.acl</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">nettoolkit</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">.acg</span> <span class="kn">import</span> <span class="n">OBJ</span>
+<span class="kn">from</span> <span class="nn">.member</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.static</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.fwObj</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Local Functions</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="access_list_list"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.access_list_list">[docs]</a><span class="k">def</span> <span class="nf">access_list_list</span><span class="p">(</span><span class="n">config_list</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;extracts access-lists from provided configuration list ie.config_list.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		config_list (list): configuration list</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		list: access-lists lines in a list</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">config_list</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;access-list &quot;</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="update_obj_grp_str"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.update_obj_grp_str">[docs]</a><span class="k">def</span> <span class="nf">update_obj_grp_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;update the object group and host string in acl</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		item (dict): acl line item</span>
+<span class="sd">		what (str): acl line attribte name (&#39;source&#39;, &#39;destination&#39;, &#39;ports&#39;, &#39;protocol&#39;)</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		str: string represenation of object group or host object in acl</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">],</span> <span class="n">OBJ</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s1">&#39;object-group &#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">],</span> <span class="n">Network</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">]</span><span class="o">.</span><span class="n">host</span><span class="p">:</span>
+		<span class="k">return</span> <span class="s1">&#39;host &#39;</span> <span class="o">+</span>  <span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">]</span><span class="o">.</span><span class="n">network</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="n">what</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dummy_group"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.dummy_group">[docs]</a><span class="k">def</span> <span class="nf">dummy_group</span><span class="p">(</span><span class="n">source_grp</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;create a dummy object-group with provided items, by taking template as source group</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		source_grp (OBJ): source group (will be a template to create new dummy group)</span>
+<span class="sd">		item (str): acl line attribte name (&#39;source&#39;, &#39;destination&#39;, &#39;ports&#39;, &#39;protocol&#39;)</span>
+<span class="sd">		values (str, set, tuple, list): set of value(s)</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		OBJ: object-group object with provided item: values</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">v</span> <span class="o">=</span> <span class="n">values</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="k">else</span> <span class="p">{</span><span class="n">values</span><span class="p">,}</span>
+	<span class="n">dg</span> <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="s1">&#39;temporary&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">,):</span><span class="n">rdk</span> <span class="o">=</span> <span class="s1">&#39;protocol-object&#39;</span>
+	<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ports&#39;</span><span class="p">,):</span><span class="n">rdk</span> <span class="o">=</span> <span class="s1">&#39;port-object&#39;</span>
+	<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;destination&#39;</span><span class="p">):</span> <span class="n">rdk</span> <span class="o">=</span> <span class="s1">&#39;network-object&#39;</span>
+	<span class="n">ogd</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">ogd</span><span class="p">[</span><span class="s1">&#39;candiates_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+	<span class="n">ogd</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_grp</span><span class="o">.</span><span class="n">obj_grp_type</span>
+	<span class="n">ogd</span><span class="p">[</span><span class="s1">&#39;svc_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_grp</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span>
+	<span class="n">dg</span><span class="o">.</span><span class="n">set_instance_primary_details</span><span class="p">(</span><span class="n">ogd</span><span class="p">)</span>
+	<span class="n">dg</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">rdk</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+	<span class="k">return</span> <span class="n">dg</span></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Access Lists Entries</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ACLS"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACLS">[docs]</a><span class="k">class</span> <span class="nc">ACLS</span><span class="p">(</span><span class="n">Plurals</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;collection of ACL objects</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Plurals (Plurals): Inherits - group of items properties definitions</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_list</span><span class="p">,</span> <span class="n">objs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;access-lists&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">acls_list</span> <span class="o">=</span> <span class="n">access_list_list</span><span class="p">(</span><span class="n">config_list</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_acl_names</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_objects</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ACLS.changes"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACLS.changes">[docs]</a>	<span class="k">def</span> <span class="nf">changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span> 
+		<span class="sd">&quot;&quot;&quot;collate the delta changes recorded in all access-lists and provide delta for that change ( &quot;ADDS&quot;, &quot;REMOVALS&quot;)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			change (str): type of change for which change output requested (  &quot;ADDS&quot;, &quot;REMOVALS&quot; )</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta changes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">changes</span><span class="p">(</span><span class="s1">&#39;acl&#39;</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span></div>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="ACLS.set_acl_names"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACLS.set_acl_names">[docs]</a>	<span class="k">def</span> <span class="nf">set_acl_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;sets available access-lists names in _repr_dic (key)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: _repr_dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">acl_line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">acls_list</span><span class="p">:</span>
+			<span class="n">spl_acl_line</span> <span class="o">=</span> <span class="n">acl_line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+			<span class="n">acl_name</span> <span class="o">=</span> <span class="n">spl_acl_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">acl_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">acl_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">acl_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acl_line</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span></div>
+
+<div class="viewcode-block" id="ACLS.set_objects"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACLS.set_objects">[docs]</a>	<span class="k">def</span> <span class="nf">set_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;sets access-lists (ACL)s in _repr_dic (value)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			objs (OBJS): object of dictionary of object-groups</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">acl_name</span><span class="p">,</span> <span class="n">acl_lines_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">acl</span> <span class="o">=</span>  <span class="n">ACL</span><span class="p">(</span><span class="n">acl_name</span><span class="p">,</span> <span class="n">acl_lines_list</span><span class="p">,</span> <span class="n">objs</span><span class="p">)</span>
+			<span class="n">acl</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">acl_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">acl</span></div></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Access List detail</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ACL"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL">[docs]</a><span class="k">class</span> <span class="nc">ACL</span><span class="p">(</span><span class="n">Singulars</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Individual access-list object</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Singulars (Singulars): Inherits - individual object properties definitions</span>
+
+<span class="sd">	Raises:</span>
+<span class="sd">		Exception: MissingMandatoryParameter</span>
+<span class="sd">		Exception: exact match process error</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		ACL: a single access-list object</span>
+
+<span class="sd">	Yields:</span>
+<span class="sd">		tuple: tuple of (line-number, line-attributes) </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">end_point_identifiers_pos</span> <span class="o">=</span> <span class="p">{</span>	<span class="c1"># static index points </span>
+		<span class="mi">0</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>						<span class="c1"># src</span>
+		<span class="mi">1</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>						<span class="c1"># dst</span>
+		<span class="mi">2</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>						<span class="c1"># port</span>
+	<span class="p">}</span>
+	<span class="n">mandatory_item_values_for_str</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;acl_type&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;protocol&#39;</span><span class="p">,</span>
+		<span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;destination&#39;</span><span class="p">,</span> <span class="s1">&#39;ports&#39;</span><span class="p">,</span> <span class="s1">&#39;log_warning&#39;</span> <span class="p">)</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acl_name</span><span class="p">,</span> <span class="n">acl_lines_list</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">acl_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">acl_name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">acl_lines_list</span> <span class="o">=</span> <span class="n">acl_lines_list</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">objs</span> <span class="o">=</span> <span class="n">objs</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">removals</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	<span class="nd">@property</span> 	             <span class="c1">## Boolean: sequence number visibility</span>
+	<span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span>
+	<span class="nd">@sequence</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="o">=</span> <span class="n">seq</span>
+	<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+			<span class="k">yield</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+			<span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">item</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+			<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+				<span class="k">return</span> <span class="kc">None</span>
+	<span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_and_append</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_and_delete</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span> 
+		<span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span>
+	<span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+		<span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span>
+	<span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_equal</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+		
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="ACL.str"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.str">[docs]</a>	<span class="k">def</span> <span class="nf">str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;String representation of full acl</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: full acl</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+			<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="ACL.add_str"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.add_str">[docs]</a>	<span class="k">def</span> <span class="nf">add_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+		<span class="sd">&quot;&quot;&quot;String representation of acl recoded additions</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: recorded acl changes (adds)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ACL.del_str"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.del_str">[docs]</a>	<span class="k">def</span> <span class="nf">del_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+		<span class="sd">&quot;&quot;&quot;String representation of acl recoded deletions</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: recorded acl changes (removals)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">removals</span><span class="p">)</span></div>
+
+	<span class="c1"># //////// OPERATIONS /////////</span>
+
+<div class="viewcode-block" id="ACL.delete"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.delete">[docs]</a>	<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span> 
+		<span class="sd">&quot;&quot;&quot;delete a line in acl:  can be use with standard delete command as well,</span>
+<span class="sd">		del(acl_name[n])</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (int, dict): int-&gt;deletes an entry by line number, dict-&gt;delete entry which matches attribute</span>
+<span class="sd">			stop (int, optional): to delete a range of lines provide end sequence. Defaults to None.</span>
+<span class="sd">			step (int, optional): to delete line numbers in multiple of. Defaults to 1.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change(s) for the deletion of entry</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">stop</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+				<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+				<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)):</span>
+					<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">s</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete_by_line</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete_by_attribs</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">attribs</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect input to delete </span><span class="si">{</span><span class="n">attribs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ACL.insert"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.insert">[docs]</a>	<span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;insert a line in acl:  can be use with standard way as well,</span>
+<span class="sd">		aclname[line_no] = attribs</span>
+<span class="sd">		display warning message - MatchingEntryAlreadyexistAtLine, if a match already exist in acl</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			line_no (int): line number at which entry to be inserted</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change(s) for the insertion of entry</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">mv</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_key_extend</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MatchingEntryAlreadyexistAtLine-</span><span class="si">{</span><span class="n">mv</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ACL.append"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.append">[docs]</a>	<span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;append a line to acl</span>
+<span class="sd">		display warning message - MatchingEntryAlreadyexistAtLine, if a match already exist in acl</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change(s) for the append of entry</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">mv</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MatchingEntryAlreadyexistAtLine-</span><span class="si">{</span><span class="n">mv</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ACL.contains"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.contains">[docs]</a>	<span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;check matching attributes in acl object, and return set of matching </span>
+<span class="sd">		acl line numbers for containing item (sparse match)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			set: set of matching acl line numbers (sparse match)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">matching_lines</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_group_members</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">acl_details</span> <span class="ow">in</span>  <span class="bp">self</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acl_details</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+				<span class="k">for</span> <span class="n">item_k</span><span class="p">,</span> <span class="n">item_v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+					<span class="k">if</span> <span class="n">item_k</span> <span class="o">==</span> <span class="s1">&#39;log_warning&#39;</span><span class="p">:</span> <span class="k">continue</span>
+					<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">],</span> <span class="n">OBJ</span><span class="p">):</span>
+						<span class="k">if</span> <span class="n">item_v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">]:</span> <span class="k">break</span>
+						<span class="k">continue</span>
+					<span class="k">if</span> <span class="n">item_v</span> <span class="o">!=</span> <span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">]:</span> <span class="k">break</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">matching_lines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">matching_lines</span></div>
+
+<div class="viewcode-block" id="ACL.exact"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.exact">[docs]</a>	<span class="k">def</span> <span class="nf">exact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;check matching attributes in acl object, and return set of matching </span>
+<span class="sd">		acl line numbers for exact matches item only</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item (dict): line attributes</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: exact match process error</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			set: set of matching acl line numbers (exact match)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">matching_lines</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_group_members</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">acl_details</span> <span class="ow">in</span>  <span class="bp">self</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acl_details</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+				<span class="k">for</span> <span class="n">item_k</span><span class="p">,</span> <span class="n">item_v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+					<span class="k">if</span> <span class="n">item_k</span> <span class="o">==</span> <span class="s1">&#39;log_warning&#39;</span><span class="p">:</span> <span class="k">continue</span>
+					<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">],</span> <span class="n">OBJ</span><span class="p">):</span>
+						<span class="n">dg_rdk</span> <span class="o">=</span> <span class="n">dummy_group</span><span class="p">(</span><span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">],</span> <span class="n">item_k</span><span class="p">,</span> <span class="n">item_v</span><span class="p">)</span>
+						<span class="k">try</span><span class="p">:</span>
+							<span class="k">if</span> <span class="n">dg_rdk</span> <span class="o">!=</span> <span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">]:</span> 
+								<span class="k">break</span>
+						<span class="k">except</span><span class="p">:</span>
+							<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;exact match process error..&quot;</span><span class="p">)</span>
+						<span class="k">continue</span>
+					<span class="k">if</span> <span class="n">item_v</span> <span class="o">!=</span> <span class="n">acl_details</span><span class="p">[</span><span class="n">item_k</span><span class="p">]:</span> <span class="k">break</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">matching_lines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">matching_lines</span></div>
+
+<div class="viewcode-block" id="ACL.difference"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.difference">[docs]</a>	<span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;difference between self and another ACL object elements</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (ACL): another ACL object to compare differences</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: difference between self and another ACL object elements</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">diffacl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">self_k</span><span class="p">,</span> <span class="n">self_v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">self_v</span><span class="p">,</span> <span class="n">ACL_REMARK</span><span class="p">):</span> <span class="k">continue</span>
+			<span class="n">_self_v</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">self_v</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;remark&#39;</span><span class="p">}</span>
+			<span class="k">for</span> <span class="n">obj_k</span><span class="p">,</span> <span class="n">obj_v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_v</span><span class="p">,</span> <span class="n">ACL_REMARK</span><span class="p">):</span> <span class="k">continue</span>
+				<span class="n">_obj_v</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">obj_v</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;remark&#39;</span><span class="p">}</span>
+				<span class="n">found</span> <span class="o">=</span> <span class="n">_self_v</span> <span class="o">==</span> <span class="n">_obj_v</span>
+				<span class="k">if</span> <span class="n">found</span><span class="p">:</span> <span class="k">break</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+				<span class="n">diffacl</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_v</span>
+		<span class="k">return</span> <span class="n">diffacl</span></div>
+
+<div class="viewcode-block" id="ACL.same_elements"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.same_elements">[docs]</a>	<span class="k">def</span> <span class="nf">same_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;compare self for similar elements with provided another ACL object.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (ACL): another ACL object to compare elements</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			bool: if self and provided ACL has same elements or not</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="p">(</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">)</span></div>
+
+
+	<span class="c1"># ---------------- Operate on a Copy --------------- 	</span>
+
+<div class="viewcode-block" id="ACL.copy_and_append"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.copy_and_append">[docs]</a>	<span class="k">def</span> <span class="nf">copy_and_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;create duplicate of self, append a new acl line in new object with provided attributes </span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			ACL: copy of ACL with attributes appended</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">newobj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">newobj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">newobj</span></div>
+
+<div class="viewcode-block" id="ACL.copy_and_delete"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.copy_and_delete">[docs]</a>	<span class="k">def</span> <span class="nf">copy_and_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;create duplicate of self, delete a line in new acl for given line number/attributes</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			ACL: copy of ACL with attributes/line removed</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">newobj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">newobj</span> <span class="o">-=</span> <span class="n">attribs</span>
+		<span class="k">return</span> <span class="n">newobj</span></div>
+
+<div class="viewcode-block" id="ACL.copy_and_insert"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.copy_and_insert">[docs]</a>	<span class="k">def</span> <span class="nf">copy_and_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;create duplicate of self, insert a new acl line in new acl object,</span>
+<span class="sd">		with provided attributes at given line number and return new updated object.</span>
+<span class="sd">		existing object remains untouched.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			line_no (int): line number at which entry to be inserted</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			ACL: copy of ACL with attributes/line insert</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">newacl</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">newacl</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">newacl</span></div>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ INTERNALS / SUPPORTIVE ~~~~~~~~~~~~~~~~~~~</span>
+
+	<span class="k">def</span> <span class="nf">_delete_by_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_no</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Supportive : delete a line in acl</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			line_no (int): line number at which entry to be deleted</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change(s) for the deletion of entry</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">removals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_del_str</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">removals</span> <span class="o">+=</span> <span class="n">removals</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_key_delete</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">&gt;</span> <span class="n">line_no</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_deflate</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">removals</span>
+
+	<span class="k">def</span> <span class="nf">_delete_by_attribs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Supportive : delete a line in acl by attrib</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): line attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change(s) for the addition of entry</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">mv</span><span class="p">)):</span>
+			<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete_by_line</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">s</span>
+
+	<span class="k">def</span> <span class="nf">_is_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive: for standard way of comparing two ACL objects self and obj</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (ACL): another ACL object to be compared with self</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			bool: if both ACL objects (self and obj) are equal or not</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span> <span class="k">continue</span>
+			<span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
+		<span class="k">return</span> <span class="kc">True</span>
+
+	<span class="k">def</span> <span class="nf">_compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive: compare and get difference between self and obj/ACL object</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (ACL): another ACL object to be compared with self</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			ACL: an ACL with differences between self and provided obj(ACL) object</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">diffacl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">self_k</span><span class="p">,</span> <span class="n">self_v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="k">for</span> <span class="n">obj_k</span><span class="p">,</span> <span class="n">obj_v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">found</span> <span class="o">=</span> <span class="n">self_v</span> <span class="o">==</span> <span class="n">obj_v</span>
+				<span class="k">if</span> <span class="n">found</span><span class="p">:</span> <span class="k">break</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span> <span class="n">diffacl</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_v</span>
+		<span class="k">return</span> <span class="n">diffacl</span>
+
+	<span class="k">def</span> <span class="nf">_key_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive: insert a new line at position n</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int): sequence line number of an acl from where keys to be extended to insert a new line</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">rvs_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rvs_keys</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span> <span class="k">break</span>
+
+	<span class="k">def</span> <span class="nf">_key_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive: deletes a line in ACL</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int): sequence line number of an acl to be removed</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+		<span class="k">except</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NoDeletableEntryFoundForLine-</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">-orAlreadyRemoved&quot;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_key_deflate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive: rearranges next lines</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int): sequence line number of an acl from where keys to be deflated</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">last_used_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">last_used_key</span><span class="p">):</span>
+			<span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">key</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">last_used_key</span><span class="p">])</span>
+
+	<span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : update member per std and insert entry to acl</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			line_no (int): line number</span>
+<span class="sd">			attribs (dict): attributes to be set on line</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta change of modification</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_members</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="n">attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_remarks</span><span class="p">(</span><span class="n">line_no</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">[</span><span class="n">line_no</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribs</span>
+		<span class="n">adds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="n">line_no</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">adds</span> <span class="o">+=</span> <span class="n">adds</span>
+		<span class="k">return</span> <span class="n">adds</span>
+
+	<span class="k">def</span> <span class="nf">_update_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : attributes update as per std source/destination/port/protocol</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): attributes to be modified with members if any</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: updated attributes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">attribs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_group_members</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">attribs</span>
+
+	<span class="k">def</span> <span class="nf">_update_remarks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : remark attributes update, if not provided use previous line remark</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int): line number</span>
+<span class="sd">			attribs (dict): remark attributes to be modified if need any</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: updated attributes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">attribs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remark&#39;</span><span class="p">)</span> <span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">attribs</span><span class="p">[</span><span class="s1">&#39;remark&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;remark&#39;</span><span class="p">]</span>
+			<span class="k">except</span><span class="p">:</span>
+				<span class="n">attribs</span><span class="p">[</span><span class="s1">&#39;remark&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="k">return</span> <span class="n">attribs</span>
+
+	<span class="k">def</span> <span class="nf">_update_group_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : source/destination/port attributes update as per std </span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): attributes</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: updated attributes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">sdps</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;destination&#39;</span><span class="p">,</span> <span class="s1">&#39;ports&#39;</span><span class="p">}</span>
+		<span class="k">for</span> <span class="n">sdp</span> <span class="ow">in</span> <span class="n">sdps</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_an_attrib</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="n">sdp</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">attribs</span>
+
+	<span class="k">def</span> <span class="nf">_update_an_attrib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">,</span> <span class="n">sdp</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : an attribute update as per std ( one of source/destination/port )</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): attributes</span>
+<span class="sd">			sdp (str): attribute name (&#39;source&#39;, &#39;destination&#39; etc..)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">f</span> <span class="o">=</span> <span class="n">port_group_member</span> <span class="k">if</span> <span class="n">sdp</span> <span class="o">==</span> <span class="s1">&#39;ports&#39;</span> <span class="k">else</span> <span class="n">network_group_member</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribs</span><span class="p">[</span><span class="n">sdp</span><span class="p">],</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+    		<span class="c1"># iterable attribute update</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_set_attribs</span><span class="p">(</span><span class="n">attribs</span><span class="p">,</span> <span class="n">sdp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+    		<span class="c1"># normal attribute update</span>
+			<span class="n">attribs</span><span class="p">[</span><span class="n">sdp</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attribs</span><span class="p">[</span><span class="n">sdp</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">objectGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objs</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_update_set_attribs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">,</span> <span class="n">sdp</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supportive : an attribute update per std (iterable attribute)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			attribs (dict): attributes</span>
+<span class="sd">			sdp (str): attribute name (&#39;source&#39;, &#39;destination&#39; etc..)</span>
+<span class="sd">			f (function): function on which the action to carried up on</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">_sdp</span> <span class="ow">in</span> <span class="n">attribs</span><span class="p">[</span><span class="n">sdp</span><span class="p">]:</span>
+			<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_sdp</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">objectGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objs</span><span class="p">))</span>
+		<span class="n">attribs</span><span class="p">[</span><span class="n">sdp</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+
+	<span class="c1"># ----------------- String repr / supportive --------------- #</span>
+
+	<span class="k">def</span> <span class="nf">_to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;String representation of an acl-line (n)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int): line number</span>
+<span class="sd">			sequence (bool, optional): require sequence number in output. Defaults to True.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: an acl line</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="ow">and</span> <span class="n">sequence</span>
+		<span class="n">seq_no</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;line </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="k">if</span> <span class="n">seq</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+		<span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mandatory_item_values_for_str</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+					<span class="n">item</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+			<span class="n">log_warning</span> <span class="o">=</span> <span class="s2">&quot; log warning&quot;</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;log_warning&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+			<span class="n">src</span> <span class="o">=</span> <span class="n">update_obj_grp_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+			<span class="n">dst</span> <span class="o">=</span> <span class="n">update_obj_grp_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;destination&#39;</span><span class="p">)</span>
+			<span class="n">pt</span>  <span class="o">=</span> <span class="n">update_obj_grp_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;ports&#39;</span><span class="p">)</span>
+			<span class="n">prt</span> <span class="o">=</span> <span class="n">update_obj_grp_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;protocol&#39;</span><span class="p">)</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;access-list </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">seq_no</span><span class="si">}</span><span class="s2">&quot;</span>
+				 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;acl_type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">prt</span><span class="si">}</span><span class="s2"> &quot;</span>
+				 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">pt</span><span class="si">}{</span><span class="n">log_warning</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;access-list </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">seq_no</span><span class="si">}{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span>
+		<span class="k">return</span> <span class="n">s</span>
+
+
+	<span class="k">def</span> <span class="nf">_del_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;negating string of an acl-line (n), can be use with standard way as well</span>
+<span class="sd">		usage: del(acl[n:n+x:step]) to delete acl entry(ies).</span>
+<span class="sd">		get/find deleted entries using property acl.removals</span>
+<span class="sd">		[remove full acl if n is not provided]</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			n (int, optional): line number. Defaults to 0.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta for negating acl line(s)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">n</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span> 
+			<span class="k">return</span> <span class="s2">&quot;no &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">n</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span> <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_del_str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="ow">not</span> <span class="n">n</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span> <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_del_str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">s</span> 
+
+	<span class="c1">## ----------- Other Supportive to Supportives --------- ##</span>
+
+	<span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;return default attributes for the require item/attribute.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item (str): attribute name</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: MissingMadatoryParameter</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			various: standard value for item, defined in normalize_item_values</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">normalize_item_values</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s1">&#39;acl_type&#39;</span><span class="p">:</span> <span class="s1">&#39;extended&#39;</span><span class="p">,</span> 
+			<span class="c1"># &#39;action&#39;: &#39;permit&#39;, </span>
+			<span class="c1"># &#39;protocol&#39;: &#39;tcp&#39;, </span>
+			<span class="c1"># &#39;source&#39;: , </span>
+			<span class="c1"># &#39;destination&#39;: , </span>
+			<span class="c1"># &#39;ports&#39;: , </span>
+			<span class="s1">&#39;log_warning&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+			<span class="p">}</span>
+		<span class="k">if</span> <span class="n">normalize_item_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+			<span class="k">return</span> <span class="n">normalize_item_values</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MissingMandatoryParameter-</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">, NormalizationNotAvailableForMandatoryField&quot;</span><span class="p">)</span>
+
+
+	<span class="c1"># ~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~~</span>
+	<span class="c1"># USED WHILE INITIATLIZING / PARSER</span>
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="ACL.parse"><a class="viewcode-back" href="../../__acl.html#fwOper.acl.ACL.parse">[docs]</a>	<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;parse access-list-lines-list and set _repr_dic</span>
+<span class="sd">		objs requires for acl lines having object-group-names</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			objs (OBJS): object of object-groups (OBJS)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">remark</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">for</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acl_lines_list</span><span class="p">):</span>
+			<span class="n">test</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;access-list al_from_blue extended deny tcp any4 any4 object-group INET-TCP-DROP&quot;</span><span class="p">)</span>
+			<span class="n">spl_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+			<span class="c1"># remarks line</span>
+			<span class="k">if</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;remark&#39;</span><span class="p">:</span>
+				<span class="n">remark</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spl_line</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">line_no</span><span class="p">]</span> <span class="o">=</span> <span class="n">ACL_REMARK</span><span class="p">(</span><span class="n">remark</span><span class="p">)</span>
+				<span class="k">continue</span>
+			<span class="c1"># src /dst / ports</span>
+			<span class="n">idx_variance</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="n">protocol_variance</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;object-group&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+			<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_point_identifiers_pos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">pv</span> <span class="o">=</span> <span class="n">v</span><span class="o">+</span><span class="n">protocol_variance</span><span class="o">+</span><span class="n">idx_variance</span>
+				<span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="n">source</span>      <span class="o">=</span> <span class="n">network_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">pv</span><span class="p">,</span> <span class="n">objectGroups</span><span class="o">=</span><span class="n">objs</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">destination</span> <span class="o">=</span> <span class="n">network_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">pv</span><span class="p">,</span> <span class="n">objectGroups</span><span class="o">=</span><span class="n">objs</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="n">ports</span>       <span class="o">=</span> <span class="n">port_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">pv</span><span class="p">,</span> <span class="n">objectGroups</span><span class="o">=</span><span class="n">objs</span><span class="p">)</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">spl_line</span><span class="p">[</span><span class="n">pv</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ANY</span><span class="p">:</span> <span class="n">idx_variance</span> <span class="o">-=</span> <span class="mi">1</span>
+				<span class="k">except</span><span class="p">:</span>
+					<span class="k">pass</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">line_no</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="s1">&#39;remark&#39;</span><span class="p">:</span> <span class="n">remark</span><span class="p">,</span>
+				<span class="s1">&#39;acl_type&#39;</span><span class="p">:</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+				<span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+				<span class="s1">&#39;protocol&#39;</span><span class="p">:</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">4</span><span class="o">+</span><span class="n">protocol_variance</span><span class="p">],</span>
+				<span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
+				<span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span>
+				<span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="n">ports</span><span class="p">,</span>
+				<span class="s1">&#39;log_warning&#39;</span><span class="p">:</span> <span class="n">STR</span><span class="o">.</span><span class="n">found</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;log warnings&#39;</span><span class="p">),</span>
+			<span class="p">}</span></div></div>
+
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1">#   Main</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="k">pass</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

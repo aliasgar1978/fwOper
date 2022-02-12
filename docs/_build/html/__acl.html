@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1. acl &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.2. acg" href="__acg.html" />
+    <link rel="prev" title="4. Technical documentation!" href="_tech_doc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_preface.html">1. fwOper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_install.html">2. Installation &amp; Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_user_doc.html">3. User documentation!</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="_tech_doc.html">4. Technical documentation!</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.1. acl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__acg.html">4.2. acg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__instances.html">4.3. instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__route.html">4.4. route</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__common.html">4.5. common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__entity.html">4.6. entity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__fwObj.html">4.7. fwObj</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__member.html">4.8. member</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__static.html">4.9. static</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="_tech_doc.html"><span class="section-number">4. </span>Technical documentation!</a> &raquo;</li>
+      <li><span class="section-number">4.1. </span>acl</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/__acl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-fwOper.acl">
+<span id="acl"></span><h1><span class="section-number">4.1. </span>acl<a class="headerlink" href="#module-fwOper.acl" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="fwOper.acl.ACL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fwOper.acl.</span></span><span class="sig-name descname"><span class="pre">ACL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acl_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl_lines_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="__fwObj.html#fwOper.fwObj.Singulars" title="fwOper.fwObj.Singulars"><code class="xref py py-class docutils literal notranslate"><span class="pre">fwOper.fwObj.Singulars</span></code></a></p>
+<p>Individual access-list object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Singulars</strong> (<a class="reference internal" href="__fwObj.html#fwOper.fwObj.Singulars" title="fwOper.fwObj.Singulars"><em>Singulars</em></a>) – Inherits - individual object properties definitions</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Exception</strong> – MissingMandatoryParameter</p></li>
+<li><p><strong>Exception</strong> – exact match process error</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a single access-list object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL">ACL</a></p>
+</dd>
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p><em>tuple</em> – tuple of (line-number, line-attributes)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.add_str">
+<span class="sig-name descname"><span class="pre">add_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.add_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.add_str" title="Permalink to this definition"></a></dt>
+<dd><p>String representation of acl recoded additions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>recorded acl changes (adds)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.append" title="Permalink to this definition"></a></dt>
+<dd><p>append a line to acl
+display warning message - MatchingEntryAlreadyexistAtLine, if a match already exist in acl</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribs</strong> (<em>dict</em>) – line attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>delta change(s) for the append of entry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.contains" title="Permalink to this definition"></a></dt>
+<dd><p>check matching attributes in acl object, and return set of matching
+acl line numbers for containing item (sparse match)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> (<em>dict</em>) – line attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>set of matching acl line numbers (sparse match)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.copy_and_append">
+<span class="sig-name descname"><span class="pre">copy_and_append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.copy_and_append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.copy_and_append" title="Permalink to this definition"></a></dt>
+<dd><p>create duplicate of self, append a new acl line in new object with provided attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribs</strong> (<em>dict</em>) – line attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>copy of ACL with attributes appended</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL">ACL</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.copy_and_delete">
+<span class="sig-name descname"><span class="pre">copy_and_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.copy_and_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.copy_and_delete" title="Permalink to this definition"></a></dt>
+<dd><p>create duplicate of self, delete a line in new acl for given line number/attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribs</strong> (<em>dict</em>) – line attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>copy of ACL with attributes/line removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL">ACL</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.copy_and_insert">
+<span class="sig-name descname"><span class="pre">copy_and_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_no</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.copy_and_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.copy_and_insert" title="Permalink to this definition"></a></dt>
+<dd><p>create duplicate of self, insert a new acl line in new acl object,
+with provided attributes at given line number and return new updated object.
+existing object remains untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line_no</strong> (<em>int</em>) – line number at which entry to be inserted</p></li>
+<li><p><strong>attribs</strong> (<em>dict</em>) – line attributes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>copy of ACL with attributes/line insert</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL">ACL</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.del_str">
+<span class="sig-name descname"><span class="pre">del_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.del_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.del_str" title="Permalink to this definition"></a></dt>
+<dd><p>String representation of acl recoded deletions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>recorded acl changes (removals)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.delete" title="Permalink to this definition"></a></dt>
+<dd><p>delete a line in acl:  can be use with standard delete command as well,
+del(acl_name[n])</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribs</strong> (<em>int</em><em>, </em><em>dict</em>) – int-&gt;deletes an entry by line number, dict-&gt;delete entry which matches attribute</p></li>
+<li><p><strong>stop</strong> (<em>int</em><em>, </em><em>optional</em>) – to delete a range of lines provide end sequence. Defaults to None.</p></li>
+<li><p><strong>step</strong> (<em>int</em><em>, </em><em>optional</em>) – to delete line numbers in multiple of. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>delta change(s) for the deletion of entry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.difference">
+<span class="sig-name descname"><span class="pre">difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.difference" title="Permalink to this definition"></a></dt>
+<dd><p>difference between self and another ACL object elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL"><em>ACL</em></a>) – another ACL object to compare differences</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>difference between self and another ACL object elements</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.end_point_identifiers_pos">
+<span class="sig-name descname"><span class="pre">end_point_identifiers_pos</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">5,</span> <span class="pre">1:</span> <span class="pre">7,</span> <span class="pre">2:</span> <span class="pre">9}</span></em><a class="headerlink" href="#fwOper.acl.ACL.end_point_identifiers_pos" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.exact">
+<span class="sig-name descname"><span class="pre">exact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.exact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.exact" title="Permalink to this definition"></a></dt>
+<dd><p>check matching attributes in acl object, and return set of matching
+acl line numbers for exact matches item only</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> (<em>dict</em>) – line attributes</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – exact match process error</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>set of matching acl line numbers (exact match)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_no</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.insert" title="Permalink to this definition"></a></dt>
+<dd><p>insert a line in acl:  can be use with standard way as well,
+aclname[line_no] = attribs
+display warning message - MatchingEntryAlreadyexistAtLine, if a match already exist in acl</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line_no</strong> (<em>int</em>) – line number at which entry to be inserted</p></li>
+<li><p><strong>attribs</strong> (<em>dict</em>) – line attributes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>delta change(s) for the insertion of entry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.mandatory_item_values_for_str">
+<span class="sig-name descname"><span class="pre">mandatory_item_values_for_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('acl_type',</span> <span class="pre">'action',</span> <span class="pre">'protocol',</span> <span class="pre">'source',</span> <span class="pre">'destination',</span> <span class="pre">'ports',</span> <span class="pre">'log_warning')</span></em><a class="headerlink" href="#fwOper.acl.ACL.mandatory_item_values_for_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.max">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max</span></span><a class="headerlink" href="#fwOper.acl.ACL.max" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.min">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min</span></span><a class="headerlink" href="#fwOper.acl.ACL.min" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.parse" title="Permalink to this definition"></a></dt>
+<dd><p>parse access-list-lines-list and set _repr_dic
+objs requires for acl lines having object-group-names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objs</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a>) – object of object-groups (OBJS)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.same_elements">
+<span class="sig-name descname"><span class="pre">same_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.same_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.same_elements" title="Permalink to this definition"></a></dt>
+<dd><p>compare self for similar elements with provided another ACL object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<a class="reference internal" href="#fwOper.acl.ACL" title="fwOper.acl.ACL"><em>ACL</em></a>) – another ACL object to compare elements</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if self and provided ACL has same elements or not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.sequence">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><a class="headerlink" href="#fwOper.acl.ACL.sequence" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACL.str">
+<span class="sig-name descname"><span class="pre">str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACL.str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACL.str" title="Permalink to this definition"></a></dt>
+<dd><p>String representation of full acl</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>full acl</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fwOper.acl.ACLS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fwOper.acl.</span></span><span class="sig-name descname"><span class="pre">ACLS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACLS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACLS" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="__fwObj.html#fwOper.fwObj.Plurals" title="fwOper.fwObj.Plurals"><code class="xref py py-class docutils literal notranslate"><span class="pre">fwOper.fwObj.Plurals</span></code></a></p>
+<p>collection of ACL objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Plurals</strong> (<a class="reference internal" href="__fwObj.html#fwOper.fwObj.Plurals" title="fwOper.fwObj.Plurals"><em>Plurals</em></a>) – Inherits - group of items properties definitions</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACLS.changes">
+<span class="sig-name descname"><span class="pre">changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACLS.changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACLS.changes" title="Permalink to this definition"></a></dt>
+<dd><p>collate the delta changes recorded in all access-lists and provide delta for that change ( “ADDS”, “REMOVALS”)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>change</strong> (<em>str</em>) – type of change for which change output requested (  “ADDS”, “REMOVALS” )</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>delta changes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACLS.set_acl_names">
+<span class="sig-name descname"><span class="pre">set_acl_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACLS.set_acl_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACLS.set_acl_names" title="Permalink to this definition"></a></dt>
+<dd><p>sets available access-lists names in _repr_dic (key)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>_repr_dict</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fwOper.acl.ACLS.set_objects">
+<span class="sig-name descname"><span class="pre">set_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#ACLS.set_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.ACLS.set_objects" title="Permalink to this definition"></a></dt>
+<dd><p>sets access-lists (ACL)s in _repr_dic (value)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objs</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a>) – object of dictionary of object-groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.acl.access_list_list">
+<span class="sig-prename descclassname"><span class="pre">fwOper.acl.</span></span><span class="sig-name descname"><span class="pre">access_list_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#access_list_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.access_list_list" title="Permalink to this definition"></a></dt>
+<dd><p>extracts access-lists from provided configuration list ie.config_list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config_list</strong> (<em>list</em>) – configuration list</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>access-lists lines in a list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.acl.dummy_group">
+<span class="sig-prename descclassname"><span class="pre">fwOper.acl.</span></span><span class="sig-name descname"><span class="pre">dummy_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_grp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#dummy_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.dummy_group" title="Permalink to this definition"></a></dt>
+<dd><p>create a dummy object-group with provided items, by taking template as source group</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_grp</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJ" title="fwOper.acg.OBJ"><em>OBJ</em></a>) – source group (will be a template to create new dummy group)</p></li>
+<li><p><strong>item</strong> (<em>str</em>) – acl line attribte name (‘source’, ‘destination’, ‘ports’, ‘protocol’)</p></li>
+<li><p><strong>values</strong> (<em>str</em><em>, </em><em>set</em><em>, </em><em>tuple</em><em>, </em><em>list</em>) – set of value(s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>object-group object with provided item: values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="__acg.html#fwOper.acg.OBJ" title="fwOper.acg.OBJ">OBJ</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.acl.update_obj_grp_str">
+<span class="sig-prename descclassname"><span class="pre">fwOper.acl.</span></span><span class="sig-name descname"><span class="pre">update_obj_grp_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/acl.html#update_obj_grp_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.acl.update_obj_grp_str" title="Permalink to this definition"></a></dt>
+<dd><p>update the object group and host string in acl</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<em>dict</em>) – acl line item</p></li>
+<li><p><strong>what</strong> (<em>str</em>) – acl line attribte name (‘source’, ‘destination’, ‘ports’, ‘protocol’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>string represenation of object group or host object in acl</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_tech_doc.html" class="btn btn-neutral float-left" title="4. Technical documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="__acg.html" class="btn btn-neutral float-right" title="4.2. acg" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fwOper.fwObj &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_preface.html">1. fwOper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_install.html">2. Installation &amp; Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_user_doc.html">3. User documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tech_doc.html">4. Technical documentation!</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>fwOper.fwObj</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fwOper.fwObj</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractclassmethod</span>
+
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># SHARED Functions</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="get_object"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.get_object">[docs]</a><span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Pre-defined set of steps to get objects.  ( either input require file/conf_list ;  preferred conf_list )</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		obj (OBJS, ACLS, ROUTES,INSTANCES): various objects type</span>
+<span class="sd">		file (str, optional): file name with path. Defaults to None.</span>
+<span class="sd">		conf_list (list, optional): configuration content in list format. Defaults to None.</span>
+
+<span class="sd">	Raises:</span>
+<span class="sd">		Exception: MissingMandatoryInput</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		object: object</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+			<span class="n">conf_list</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+	<span class="n">objs</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="n">conf_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">conf_list</span><span class="p">:</span> <span class="k">return</span> <span class="n">objs</span>
+	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;MissingMandatoryInput(AtleastOneRequire {file/conf_list})&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># SHARED Classes</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="Common"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Common">[docs]</a><span class="k">class</span> <span class="nc">Common</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;Commons properties/methods for Singular/Plural objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">yield</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span> 
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="c1"># if self._repr_dic.get(item) else None</span>
+	<span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span> 
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+		<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s1">]&#39;</span>
+<div class="viewcode-block" id="Common.keys"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Common.keys">[docs]</a>	<span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+<div class="viewcode-block" id="Common.values"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Common.values">[docs]</a>	<span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+	<span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+		<span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+		<span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="nb">setattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">memo</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">result</span></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="Plurals"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Plurals">[docs]</a><span class="k">class</span> <span class="nc">Plurals</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;collection of objects </span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Common (Common): Inherits Commons properties/methods for Singular/Plural objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">setofobjs</span> <span class="o">=</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+		<span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="si">}</span><span class="se">\n</span><span class="s1"># Dict of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">what</span><span class="si">}</span><span class="s1"> listed below:  #</span><span class="se">\n</span><span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">setofobjs</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Plurals.set_objects"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Plurals.set_objects">[docs]</a>	<span class="nd">@abstractclassmethod</span>
+	<span class="k">def</span> <span class="nf">set_objects</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Plurals.changes"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Plurals.changes">[docs]</a>	<span class="k">def</span> <span class="nf">changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;collate the recorded delta changes and provide delta for that change ( &quot;ADDS&quot;, &quot;REMOVALS&quot; )</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			what (str): where to look for the change (&#39;acl&#39;, &#39;object-group&#39;)</span>
+<span class="sd">			change (str): type of change for which change output requested ( &quot;ADDS&quot;, &quot;REMOVALS&quot; )</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: INCORRECTCHANGE</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta changes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">change</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ADDS&quot;</span><span class="p">,</span> <span class="s2">&quot;REMOVALS&quot;</span><span class="p">):</span> 
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;INCORRECTCHANGE: Valid options are &quot;ADDS/REMOVALS&quot;&#39;</span><span class="p">)</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">change</span><span class="o">.</span><span class="n">lower</span><span class="p">()]:</span> <span class="k">continue</span>
+			<span class="n">s</span> <span class="o">+=</span> <span class="n">heading</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span>
+			<span class="n">f</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">add_str</span> <span class="k">if</span> <span class="n">change</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;adds&#39;</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">del_str</span>
+			<span class="n">s</span> <span class="o">+=</span> <span class="n">f</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">s</span>	</div></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="Singulars"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Singulars">[docs]</a><span class="k">class</span> <span class="nc">Singulars</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;a single object</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Common (Common): Inherits Commons properties/methods for Singular/Plural objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+	<span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">str</span><span class="p">()</span>
+<div class="viewcode-block" id="Singulars.parse"><a class="viewcode-back" href="../../__fwObj.html#fwOper.fwObj.Singulars.parse">[docs]</a>	<span class="nd">@abstractclassmethod</span>
+	<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span> <span class="k">pass</span></div></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

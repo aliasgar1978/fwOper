@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.8. member &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.9. static" href="__static.html" />
+    <link rel="prev" title="4.7. fwObj" href="__fwObj.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_preface.html">1. fwOper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_install.html">2. Installation &amp; Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_user_doc.html">3. User documentation!</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="_tech_doc.html">4. Technical documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="__acl.html">4.1. acl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__acg.html">4.2. acg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__instances.html">4.3. instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__route.html">4.4. route</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__common.html">4.5. common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__entity.html">4.6. entity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__fwObj.html">4.7. fwObj</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.8. member</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__static.html">4.9. static</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="_tech_doc.html"><span class="section-number">4. </span>Technical documentation!</a> &raquo;</li>
+      <li><span class="section-number">4.8. </span>member</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/__member.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-fwOper.member">
+<span id="member"></span><h1><span class="section-number">4.8. </span>member<a class="headerlink" href="#module-fwOper.member" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.get_match_dict">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">get_match_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#get_match_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.get_match_dict" title="Permalink to this definition"></a></dt>
+<dd><p>search for request parameters and return matching parameters dictionary.
+(dictionary with attributes require to match in ACL)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request_parameters</strong> (<em>dict</em>) – request paramters in dictionary</p></li>
+<li><p><strong>objs</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a>) – object-groups object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>with filtered parameters only</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.get_port_name">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">get_port_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#get_port_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.get_port_name" title="Permalink to this definition"></a></dt>
+<dd><p>update and return well known port number for port name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em>) – port number</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>well-known port name else port number</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.group_object_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">group_object_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spl_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#group_object_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.group_object_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns object-group object from given splitted line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spl_line</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>objectGroups</strong> (<em>[</em><em>type</em><em>]</em><em>, </em><em>optional</em>) – [description]. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>object-group OBJ member object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="__acg.html#fwOper.acg.OBJ" title="fwOper.acg.OBJ">OBJ</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.icmp_group_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">icmp_group_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spl_line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#icmp_group_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.icmp_group_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns icmp port group member object from given splitted line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spl_line</strong> (<em>list</em>) – splitted line of an acl entry</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>IcmpProtocol member object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>IcmpProtocol</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.network_group_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">network_group_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spl_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#network_group_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.network_group_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns Network group member object from given splitted line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spl_line</strong> (<em>list</em>) – splitted line of an acl entry</p></li>
+<li><p><strong>idx</strong> (<em>int</em>) – index position to start looking for network</p></li>
+<li><p><strong>objectGroups</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a><em>, </em><em>optional</em>) – object-groups object. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – UndefinedEndPointType</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Network group member object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference internal" href="__entity.html#fwOper.entity.Network" title="fwOper.entity.Network">Network</a>, <a class="reference internal" href="__acg.html#fwOper.acg.OBJ" title="fwOper.acg.OBJ">OBJ</a>, None)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.network_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">network_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#network_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.network_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns Network group member object for given network, objs will require if network has object-group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> (<em>str</em>) – ip-network string</p></li>
+<li><p><strong>objs</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a><em>, </em><em>optional</em>) – object-groups object. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – InvalidNetwork</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Network group member object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="__entity.html#fwOper.entity.Network" title="fwOper.entity.Network">Network</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.port_group_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">port_group_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spl_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#port_group_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.port_group_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns Port group member object from given splitted line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spl_line</strong> (<em>list</em>) – splitted line of an acl entry</p></li>
+<li><p><strong>idx</strong> (<em>int</em>) – index position to start looking for port(s)</p></li>
+<li><p><strong>objectGroups</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a><em>, </em><em>optional</em>) – object-groups object. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – UndefinedPort/PortType</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Network group member object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference internal" href="__entity.html#fwOper.entity.Ports" title="fwOper.entity.Ports">Ports</a>, <a class="reference internal" href="__acg.html#fwOper.acg.OBJ" title="fwOper.acg.OBJ">OBJ</a>, None)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.port_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">port_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#port_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.port_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns Port group member object for given port, objs will require if port has object-group</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> (<em>str</em>) – port string</p></li>
+<li><p><strong>objs</strong> (<a class="reference internal" href="__acg.html#fwOper.acg.OBJS" title="fwOper.acg.OBJS"><em>OBJS</em></a>) – object-groups object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – InvalidPort</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Ports member object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="__entity.html#fwOper.entity.Ports" title="fwOper.entity.Ports">Ports</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.protocol_group_member">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">protocol_group_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spl_line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#protocol_group_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.protocol_group_member" title="Permalink to this definition"></a></dt>
+<dd><p>returns protocol group member object from given splitted line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spl_line</strong> (<em>list</em>) – splitted line of an acl entry</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>NetworkProtocol member object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NetworkProtocol</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fwOper.member.update_ports_name">
+<span class="sig-prename descclassname"><span class="pre">fwOper.member.</span></span><span class="sig-name descname"><span class="pre">update_ports_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">requests</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fwOper/member.html#update_ports_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fwOper.member.update_ports_name" title="Permalink to this definition"></a></dt>
+<dd><p>update and return well known port number for port name in given request port</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>requests</strong> (<em>dict</em>) – acl attributes in request dictionary</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>updated request attributes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="__fwObj.html" class="btn btn-neutral float-left" title="4.7. fwObj" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="__static.html" class="btn btn-neutral float-right" title="4.9. static" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
