@@ -1,3 +1,4 @@
+
 # ------------------------------------------------------------------------------
 import os
 import pandas as pd
@@ -15,6 +16,7 @@ GROUPBY_SEQUENCE = ['request_type', 'firewall_name', 'firewall_instance', 'acl_n
 
 def get_file_name(folder, hostname):
 	"""file name for the given hostname in folder
+	assumed that firewall logs are stored with hostname as filename
 
 	Args:
 		folder (str): Folder path

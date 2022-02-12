@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. fw_Oper.acl User documentation! &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. fw_Oper.acg User documentation!" href="_acg_exec.html" />
+    <link rel="prev" title="1. User documentation!" href="_user_doc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="_user_doc.html">1. User documentation!</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1. fw_Oper.acl User documentation!</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cisco-firewall-access-lists-how-to">1.1. Cisco Firewall Access-Lists - How To ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-level-overview">1.2. High-level Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detailed-how-to">1.3. Detailed How To</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extra-nuggets">1.4. Extra Nuggets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_acg_exec.html">2. fw_Oper.acg User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_routes_exec.html">3. fw_Oper.route User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_fwOper_exec_sample.html">4. Sample Execution Steps!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_tech_doc.html">2. Technical documentation!</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="_user_doc.html"><span class="section-number">1. </span>User documentation!</a> &raquo;</li>
+      <li><span class="section-number">1. </span>fw_Oper.acl User documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/_acl_exec.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="fw-oper-acl-user-documentation">
+<h1><span class="section-number">1. </span>fw_Oper.acl User documentation!<a class="headerlink" href="#fw-oper-acl-user-documentation" title="Permalink to this headline"></a></h1>
+<div class="section" id="cisco-firewall-access-lists-how-to">
+<h2><span class="section-number">1.1. </span>Cisco Firewall Access-Lists - How To ?<a class="headerlink" href="#cisco-firewall-access-lists-how-to" title="Permalink to this headline"></a></h2>
+<p>Use the acl module of fw_oper package to get the necessary changes for the ACL
+on Cisco Firewall.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Build your own script in order to get the change delta script generated using this package.</p>
+<p><strong>High-level steps:</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Make a firewall change request excel, csv sheet. read it thru Pandas or other package.</p></li>
+<li><p>Read thru each add/del request.</p></li>
+<li><p>Convert request to dictionary format as required by this package.</p></li>
+<li><p>Execute appropriate request on eligible ACL.</p></li>
+<li><p>At last get the delta changes.</p></li>
+</ol>
+</div></blockquote>
+<p><strong>See Also:</strong> Sample Execution Steps!</p>
+</div>
+</div>
+<div class="section" id="high-level-overview">
+<h2><span class="section-number">1.2. </span>High-level Overview<a class="headerlink" href="#high-level-overview" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Define inputs</p></li>
+<li><p>Import package, modules</p></li>
+<li><p>select firewall, acls, acl Objects</p></li>
+<li><p>Operate and View acl</p></li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="detailed-how-to">
+<h2><span class="section-number">1.3. </span>Detailed How To<a class="headerlink" href="#detailed-how-to" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Define inputs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;running-config log captuerd file for fw.log&#39;</span>    <span class="c1"># fw log</span>
+
+<span class="n">new_entry_to_add</span> <span class="o">=</span> <span class="p">{</span>            <span class="c1"># acl detail to add</span>
+        <span class="s1">&#39;acl_type&#39;</span><span class="p">:</span> <span class="s1">&#39;extended&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;permit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;protocol&#39;</span><span class="p">:</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;10.10.10.0 255.255.255.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;host 2.2.2.2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="s1">&#39;eq 2222&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;log_warning&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;remark&#39;</span><span class="p">:</span> <span class="s1">&#39;Remark if any&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">old_entry_to_del</span> <span class="o">=</span> <span class="p">{</span>    <span class="c1"># acl detail to del</span>
+        <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;permit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;protocol&#39;</span><span class="p">:</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;158.98.23.194 255.255.255.255&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="s1">&#39;host 210.89.6.101&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="s1">&#39;eq ssh&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Import necessary package/modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fwOper</span> <span class="k">as</span> <span class="nn">fw</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create Firewall Object:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">flst</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+<span class="n">insts</span> <span class="o">=</span> <span class="n">fw</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">fw</span><span class="o">.</span><span class="n">Instances</span><span class="p">,</span> <span class="n">conf_list</span><span class="o">=</span><span class="n">flst</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">insts</span><span class="p">)</span>                    <span class="c1"># set of instances</span>
+</pre></div>
+</div>
+</li>
+<li><p>Refereance to Instance Access-lists (set of ALCs)</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">acls</span> <span class="o">=</span> <span class="n">insts</span><span class="p">[</span><span class="s1">&#39;instance_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">acls</span>
+<span class="n">acls</span> <span class="o">=</span> <span class="n">insts</span><span class="o">.</span><span class="n">instance_name</span><span class="o">.</span><span class="n">acls</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acls</span><span class="p">)</span>                     <span class="c1"># set of acls</span>
+</pre></div>
+</div>
+<p><em>instance_name</em> can be accepted in either <strong>bracket</strong> or <strong>dotted</strong> format.
+Use of bracket format is must if space/special characters involved in <em>instance_name</em>.</p>
+</div></blockquote>
+</li>
+<li><p>Select an ACL from set of ACLS</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">acl</span> <span class="o">=</span> <span class="n">acls</span><span class="p">[</span><span class="s1">&#39;acl_name&#39;</span><span class="p">]</span>
+<span class="n">acl</span> <span class="o">=</span> <span class="n">acls</span><span class="o">.</span><span class="n">acl_name</span>
+</pre></div>
+</div>
+<p><em>acl_name</em> can be accepted in either <strong>bracket</strong> or <strong>dotted</strong> format.
+Use of bracket format is must if space/special characters involved in <em>acl_name</em>.</p>
+</div></blockquote>
+</li>
+<li><p>Set ACL Numbering enable/disable on given acl:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">acl</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="kc">True</span>     <span class="c1"># set sequence numbering enabled (default=disable)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Operations on ACL</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>acl views, properties:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>                      <span class="c1"># full acl</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">13</span><span class="p">])</span>                <span class="c1"># get range of acl lines</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">acl</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>         <span class="c1"># least &amp; maximm acl sequence number.</span>
+</pre></div>
+</div>
+</li>
+<li><p>add:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">acl1</span> <span class="o">=</span> <span class="n">acl</span> <span class="o">+</span> <span class="n">new_entry_to_add</span>   <span class="c1"># append new entry, create a new ACL</span>
+<span class="n">acl</span> <span class="o">+=</span> <span class="n">new_entry_to_add</span>         <span class="c1"># append new entry, same acl</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">))</span>          <span class="c1"># same as above.</span>
+</pre></div>
+</div>
+</li>
+<li><p>delete:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">acl1</span> <span class="o">=</span> <span class="n">acl</span> <span class="o">-</span> <span class="n">old_entry_to_del</span>   <span class="c1"># create a new ACL by deleting an old entry.</span>
+<span class="n">acl</span> <span class="o">-=</span> <span class="n">old_entry_to_del</span>         <span class="c1"># delete an old entry from existing ACL.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">old_entry_to_del</span><span class="p">))</span>  <span class="c1"># same as above</span>
+<span class="n">acl1</span> <span class="o">=</span> <span class="n">acl</span> <span class="o">-</span> <span class="mi">10</span>                 <span class="c1">#  delete acl sequence number `10`</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>           <span class="c1"># same as above</span>
+<span class="k">del</span><span class="p">(</span><span class="n">acl</span><span class="p">[</span><span class="mi">210</span><span class="p">:</span><span class="mi">212</span><span class="p">])</span>               <span class="c1"># delete range of lines from acl.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># delete range of lines from acl, with jump step.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">removals</span><span class="p">)</span>             <span class="c1"># verify, get - deleted entries</span>
+</pre></div>
+</div>
+</li>
+<li><p>insert:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">new</span><span class="p">))</span>      <span class="c1"># insert new entry at position (10)</span>
+</pre></div>
+</div>
+</li>
+<li><p>verifications:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">old_entry_to_del</span> <span class="ow">in</span> <span class="n">acl</span><span class="p">)</span>  <span class="c1"># bool: entry found in acl</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">old_entry_to_del</span><span class="p">))</span><span class="c1"># set: of line numbers containing attributes (sparse matche).</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">exact</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="p">)</span>          <span class="c1"># set: of line numbers matching attributes (exact matches)</span>
+</pre></div>
+</div>
+</li>
+<li><p>comparisions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">acl1</span> <span class="o">=</span> <span class="n">acls</span><span class="o">.</span><span class="n">another_acl_name</span>    <span class="c1"># select another ACL</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span> <span class="o">&gt;</span> <span class="n">acl1</span><span class="p">)</span>               <span class="c1"># acl1 entries missing in acl, diff in two acls</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span> <span class="o">&lt;</span> <span class="n">acl1</span><span class="p">)</span>               <span class="c1"># acl entries missing in acl1, diff in two acls</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">acl</span> <span class="o">==</span> <span class="n">acl1</span> <span class="p">)</span>            <span class="c1"># bool: compare two acls / (exact match)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">acl1</span><span class="p">))</span>     <span class="c1"># differences: from acl to acl1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acl1</span><span class="o">.</span><span class="n">same_elements</span><span class="p">(</span><span class="n">acl</span><span class="p">))</span>  <span class="c1"># bool: compare two acl elements == (sparse match)</span>
+</pre></div>
+</div>
+</li>
+<li><p>get delta:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">acls</span><span class="o">.</span><span class="n">changes</span><span class="p">(</span><span class="s2">&quot;adds&quot;</span><span class="p">))</span>     <span class="c1"># get additions for all ACLs after apply changes</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">acls</span><span class="o">.</span><span class="n">changes</span><span class="p">(</span><span class="s2">&quot;removals&quot;</span><span class="p">))</span> <span class="c1"># get removals for all ACLs after apply changes</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be extra careful on implementatin steps if sequence numbering used.</p>
+</div>
+</div>
+<div class="section" id="extra-nuggets">
+<h2><span class="section-number">1.4. </span>Extra Nuggets<a class="headerlink" href="#extra-nuggets" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>In delta modification dictionary, <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">destinations</span></code> accepts all three variants of <strong>addressing format</strong>.  And no-mask will consider it as host entry.</dt><dd><ol class="arabic simple">
+<li><p>10.10.10.1 255.255.255.255</p></li>
+<li><p>host 10.10.10.1</p></li>
+<li><p>10.10.10.1/32</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Multiple <code class="docutils literal notranslate"><span class="pre">source</span></code> and/or <code class="docutils literal notranslate"><span class="pre">destinations</span></code> can be supplied in sets, as below.</dt><dd><ul>
+<li><p>‘source’: {‘1.1.1.1’, ‘1.1.1.2’, ‘1.1.1.3’, ‘1.1.1.4’}</p></li>
+<li><p>‘destination’: {‘2.1.1.1’, ‘2.1.1.2’, ‘2.1.1.3’, ‘2.1.1.4’},</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_user_doc.html" class="btn btn-neutral float-left" title="1. User documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_acg_exec.html" class="btn btn-neutral float-right" title="2. fw_Oper.acg User documentation!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

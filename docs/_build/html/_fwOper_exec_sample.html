@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. Sample Execution Steps! &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Technical documentation!" href="_tech_doc.html" />
+    <link rel="prev" title="3. fw_Oper.route User documentation!" href="_routes_exec.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="_user_doc.html">1. User documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="_acl_exec.html">1. fw_Oper.acl User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_acg_exec.html">2. fw_Oper.acg User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_routes_exec.html">3. fw_Oper.route User documentation!</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4. Sample Execution Steps!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_tech_doc.html">2. Technical documentation!</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="_user_doc.html"><span class="section-number">1. </span>User documentation!</a> &raquo;</li>
+      <li><span class="section-number">4. </span>Sample Execution Steps!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/_fwOper_exec_sample.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="sample-execution-steps">
+<h1><span class="section-number">4. </span>Sample Execution Steps!<a class="headerlink" href="#sample-execution-steps" title="Permalink to this headline"></a></h1>
+<p>Here below is the sample code from my desk, alter it as per your need to get the desired result.</p>
+<div class="highlight-pyhon notranslate"><div class="highlight"><pre><span></span># ------------------------------------------------------------------------------
+# Imports
+# ------------------------------------------------------------------------------
+import os
+import pandas as pd
+from collections import OrderedDict
+from pprint import pprint
+import fwOper
+
+
+
+#  sample DATABASE request.xlsx FORMAT
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
+# |request_type|firewall_name|firewall_instance|acl_name|action|source|destination|protocol|ports|remark|insert_at|source_grp|destination_grp|ports_grp|protocol_grp|
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
+
+
+# ------------------------------------------------------------------------------
+#  global vars
+# ------------------------------------------------------------------------------
+
+REQUEST_TYPES = (&#39;del&#39;, &#39;add&#39;)
+GROUPBY_SEQUENCE = [&#39;request_type&#39;, &#39;firewall_name&#39;, &#39;firewall_instance&#39;, &#39;acl_name&#39;]
+
+# ------------------------------------------------------------------------------
+#                               FUNCTIONS
+# ------------------------------------------------------------------------------
+
+def get_file_name(folder, hostname):
+        &quot;&quot;&quot;file name for the given hostname in folder
+        assumed that firewall logs are stored with hostname as filename
+
+        Args:
+                folder (str): Folder path
+                hostname (str): hostname
+
+        Returns:
+                str: filename containing hostname in given folder.
+        &quot;&quot;&quot;
+        for file in os.listdir(folder):
+                if file.lower().find(hostname.lower()) &gt; -1:
+                        return file
+
+
+def filter_request(request):
+        &quot;&quot;&quot;filters request dictionary for the mentioned fields only
+
+        Args:
+                request (dict): input request attributes
+
+        Returns:
+                dict: filtered request attributes
+        &quot;&quot;&quot;
+        fields = {&#39;source&#39;, &#39;destination&#39;, &#39;protocol&#39;, &#39;ports&#39;, &#39;action&#39;, &#39;remark&#39;, &#39;insert_at&#39;}
+        return {field: request[field] for field in fields if request[field]}
+
+
+def execute_req(req_type, Firewalls, req_grp):
+        &quot;&quot;&quot;Excute the ACL Change request
+
+        Args:
+                req_type (str): request type (either &#39;add&#39;, &#39;del&#39;)
+                Firewalls (dict): Firewall objects dictionary
+                req_grp (dict): grouped input requests
+
+        Returns:
+                s: delta change for the execution of request
+        &quot;&quot;&quot;
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~ go sequencial on REQUEST_TYPES (&#39;del&#39;, &#39;add&#39;) ~~~~
+        if req_grp[&#39;request_grp&#39;][&#39;request_type&#39;] != req_type: return &#39;&#39;
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~ set group request variable ~~~~
+        grp_request = req_grp[&#39;req_grp&#39;]
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~ set fw parameters/variables ~~~~
+        fw = Firewalls[req_grp[&#39;request_grp&#39;][&#39;firewall_name&#39;]]
+        fw_inst = fw.instances[req_grp[&#39;request_grp&#39;][&#39;firewall_instance&#39;]]
+        acl = fw_inst.acls[req_grp[&#39;request_grp&#39;][&#39;acl_name&#39;]]
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~ execute request based on request type ~~~~
+        if req_type == &#39;del&#39;:  return execute_del_req(acl, grp_request)
+        if req_type == &#39;add&#39;:  return execute_add_req(acl, grp_request)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def execute_del_req(acl, grp_request):
+        &quot;&quot;&quot;execution of grouped delete requests
+
+        Args:
+                acl (ACL): access-list object
+                grp_request (list): grouped input request attributes to be deleted on given ACL
+
+        Returns:
+                str: delta change(s) for given delete request
+        &quot;&quot;&quot;
+        ### here some where group check will get insert ### [TBD]
+        acl.sequence = False                                                                            # Enable if require sequence number in delta output
+        s = &#39;&#39;
+        for gr in grp_request:
+                s += acl.delete(gr)
+        return s
+
+
+def execute_add_req(acl, grp_request):
+        &quot;&quot;&quot;execution of grouped add/insert requests
+        &#39;insert_at&#39;-attribute needed per request for inserting, otherwise request will be considered as add(append).
+
+        Args:
+                acl (ACL): access-list object
+                grp_request (list): grouped input request attributes to be added/inserted on given ACL
+
+        Returns:
+                str: delta change(s) for given add/insert request
+        &quot;&quot;&quot;
+        acl.sequence = True
+        s = &#39;&#39;
+        for gr in grp_request:
+                if gr.get(&#39;insert_at&#39;):
+                        n = int(gr[&#39;insert_at&#39;])
+                        del(gr[&#39;insert_at&#39;])
+                        s += acl.insert(n, gr)
+                else:
+                        s += acl.append(gr)
+        return s
+
+
+
+def check_exact_group()
+        source_grp=fwOper.NetworkObject()
+        item = &#39;destination&#39;
+        values = set()
+        for gr in grp_request:
+                values.add(gr[&#39;destination&#39;])
+        dum_grp = fwOper.dummy_group(source_grp, item, values)
+
+
+
+# ------------------------------------------------------------------------------
+#                                  CLASSES
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# REQUEST Parameters
+# ------------------------------------------------------------------------------
+class Request():
+        &quot;&quot;&quot;Firewall change request (Excel) method, properties, exections
+        &quot;&quot;&quot;
+
+        def __init__(self, request_input_file, sheet_name=&#39;Sheet1&#39;):
+                &quot;&quot;&quot;provide excel input file
+
+                Args:
+                        request_input_file (str): input request file
+                &quot;&quot;&quot;
+                self.request_input_file = request_input_file
+                self.get_dataframe(sheet_name)
+
+        def get_dataframe(self, sheet_name):
+                &quot;&quot;&quot;creates data frame (requests), and firewalls name-list in the requests
+                &quot;&quot;&quot;
+                self.requests = pd.read_excel(self.request_input_file, sheet_name=sheet_name).fillna(&quot;&quot;)
+                self.firewalls = self.requests.firewall_name.unique()
+                self.requests = self.requests.groupby( GROUPBY_SEQUENCE )
+
+        def group_members(self, group):
+                &quot;&quot;&quot;convert the grouping members in dictionary format ( from tuples (group, df) ),
+                also updaets missing firewall_instance with default &#39;system&#39;.
+
+                Args:
+                        group (dict of tulpes): group members
+
+                Returns:
+                        dict: grouping members
+                &quot;&quot;&quot;
+                members = {}
+                for i, gm in enumerate(GROUPBY_SEQUENCE):
+                        if gm == &#39;firewall_instance&#39; and group[0][i] == &#39;&#39;:
+                                members[gm] = &#39;system&#39;
+                        else:
+                                members[gm] = group[0][i]
+                return members
+
+        def create_request_group(self, df):
+                &quot;&quot;&quot;create the requests list based on group
+
+                Args:
+                        df (pandas.DataFrame): filtered (member) DataFrame to create a list of group request
+
+                Returns:
+                        list: input requests
+                &quot;&quot;&quot;
+                req_grp = []
+                d = df.T.to_dict()
+                for i, req in d.items():
+                        req_grp.append(filter_request(req))
+                return req_grp
+
+        def gen_request_id_groups(self):
+                &quot;&quot;&quot;group input request and get the grouped request format= {id:req_grp_dict}
+
+                Returns:
+                        dict: grouped request
+                &quot;&quot;&quot;
+                request_id_grp = {}
+                for i, group in enumerate(self.requests):
+                        request_grp = self.group_members(group)                 # get request type
+                        request_df = group[1]
+                        req_grp = self.create_request_group(request_df) # get group of requests.
+                        request_id_grp[i] = {&#39;request_grp&#39;:request_grp, &#39;req_grp&#39;:req_grp}
+                return request_id_grp
+
+# ------------------------------------------------------------------------------
+# Firewall Object
+# ------------------------------------------------------------------------------
+class Firewall(object):
+        &quot;&quot;&quot;A Firewall object
+
+        Args:
+                object (object): default
+        &quot;&quot;&quot;
+
+        def __init__(self, folder, firewall):
+                &quot;&quot;&quot;provide folder and firewall name for which Firewall object to be created
+
+                attributes:
+                        instances: instances of the firewall
+
+                Args:
+                        folder (str): folder path where config backup stored
+                        firewall (str): firewall name with which backup is stored
+                &quot;&quot;&quot;
+                file = get_file_name(folder, firewall)
+                self.read(folder, file)
+
+        def read(self, folder, file):
+                &quot;&quot;&quot;reads firewall configuration file from provided folder.
+
+                Raises:
+                        Exception: MissingInput
+
+                Args:
+                        folder (str): where configuration files stored
+                        file (str): filename of config file
+                &quot;&quot;&quot;
+                try:
+                        with open(folder+file, &#39;r&#39;) as f:
+                                fw_lst = f.readlines()
+                                self.instances = fwOper.get_object(fwOper.Instances, conf_list=fw_lst)
+                except:
+                        Exception(f&quot;MissingInput{folder+file}&quot;)
+
+
+# ------------------------------------------------------------------------------
+# EXECUTION
+# ------------------------------------------------------------------------------
+if __name__ == &#39;__main__&#39;:
+        pass
+# ------------------------------------------------------------------------------
+
+        ############## WAY OF EXECUTION ##############
+
+        # STEP1: Provide Inputs ----------------------------------------------
+        file = &#39;request.xlsx&#39;
+        firewall_backup_folder = &#39;/path_to_firewall_backup_folder/&#39;
+
+        # STEP2: Initialize Request and Firewall inputs ----------------------
+        Req = Request(file)
+        rigs = Req.gen_request_id_groups()
+        Firewalls = {fw: Firewall(firewall_backup_folder, fw) for fw in Req.firewalls}
+
+        # STEP3: Iterate thru requests ---------------------------------------
+        for req_type in REQUEST_TYPES:  # default (first=&#39;del&#39;, second=&#39;add&#39;)
+                for i, req_id_grp in rigs.items():
+                        pass
+                        s = execute_req(req_type, Firewalls, req_id_grp)
+                        if s: print(s)                  # This is delta output
+
+
+
+        fw = &#39;testfw&#39;                                   # provide FW Name to see update
+        print(Firewalls[fw].instances.system.acls.al_PERMIT_I)  # This is updated ACL
+
+# ------------------------------------------------------------------------------
+</pre></div>
+</div>
+<p><strong>Thank You!</strong></p>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_routes_exec.html" class="btn btn-neutral float-left" title="3. fw_Oper.route User documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_tech_doc.html" class="btn btn-neutral float-right" title="2. Technical documentation!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR [ALI].</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fwOper.acg &mdash; fwOper 0.0.4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> fwOper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_tech_doc.html">1. Welcome to fwOper’s technical documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tech_doc.html#indices-and-tables">2. Indices and tables</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fwOper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>fwOper.acg</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fwOper.acg</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">nettoolkit</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">.member</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.static</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.fwObj</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Local Functions</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">_object_group_list</span><span class="p">(</span><span class="n">config_list</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;extracts obect groups from provided configuration list ie.config_list </span>
+<span class="sd">	returns object groups (OBJ)s in a list</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		config_list (list): full configuration list</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		list: object-groups list</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">obj_grp_list</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">obj_group_started</span> <span class="o">=</span> <span class="kc">False</span>
+	<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">config_list</span><span class="p">:</span>
+		<span class="n">spaces</span> <span class="o">=</span> <span class="n">STR</span><span class="o">.</span><span class="n">indention</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;object-group&quot;</span><span class="p">):</span> 
+			<span class="n">obj_group_started</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="n">obj_grp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+			<span class="k">continue</span>
+		<span class="k">if</span> <span class="n">obj_group_started</span> <span class="ow">and</span> <span class="n">spaces</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">obj_grp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+			<span class="k">continue</span>
+		<span class="k">if</span> <span class="n">obj_group_started</span><span class="p">:</span>
+			<span class="k">break</span>
+	<span class="k">return</span> <span class="n">obj_grp_list</span>
+
+
+<div class="viewcode-block" id="get_member_obj"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.get_member_obj">[docs]</a><span class="k">def</span> <span class="nf">get_member_obj</span><span class="p">(</span><span class="n">member_type</span><span class="p">,</span> <span class="n">member</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;convert and provided string member to member object aka: Network, OBJ, Ports based on its member-type provided.</span>
+<span class="sd">	objs: requires for recursive lookup for OBJ (if any)</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		member_type (str): type of member</span>
+<span class="sd">		member (str): string repr of Network, OBJ, Ports etc</span>
+<span class="sd">		objs (OBJS): collection of Object-groups (OBJS object)</span>
+
+<span class="sd">	Raises:</span>
+<span class="sd">		Exception: InvalidMemberType</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		[Network, Ports, None]: Based on member type returns member object</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">member_type_map</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s1">&#39;port-object&#39;</span><span class="p">:</span> <span class="n">port_member</span><span class="p">,</span>
+		<span class="s1">&#39;network-object&#39;</span><span class="p">:</span> <span class="n">network_member</span><span class="p">,</span>
+		<span class="s1">&#39;icmp-object&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>		<span class="c1"># TBD</span>
+		<span class="s1">&#39;group-object&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>		<span class="c1"># TBD</span>
+		<span class="s1">&#39;protocol-object&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>	<span class="c1"># TBD</span>
+		<span class="c1"># ... add more as need</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">member_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">member_type_map</span><span class="p">:</span> 
+		<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;InvalidMemberTypeDefined-</span><span class="si">{</span><span class="n">member_type</span><span class="si">}</span><span class="s2"> for member-</span><span class="si">{</span><span class="n">member</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">member_type_map</span><span class="p">[</span><span class="n">member_type</span><span class="p">](</span><span class="n">member</span><span class="p">,</span> <span class="n">objs</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Collection of Object Group(s) objects</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="OBJS"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJS">[docs]</a><span class="k">class</span> <span class="nc">OBJS</span><span class="p">(</span><span class="n">Plurals</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;collection of object groups</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Plurals (Plurals): Inherits - group of items properties definitions</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_list</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;object-groups&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">obj_grps_list</span> <span class="o">=</span> <span class="n">_object_group_list</span><span class="p">(</span><span class="n">config_list</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_set_obj_grp_basics</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_objects</span><span class="p">()</span>
+
+<div class="viewcode-block" id="OBJS.changes"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJS.changes">[docs]</a>	<span class="k">def</span> <span class="nf">changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span> 
+		<span class="sd">&quot;&quot;&quot;collate the delta changes recorded in all object-groups and provide delta for that change ( &quot;ADDS&quot;, &quot;REMOVALS&quot;)</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			change (str): type of change for which change output requested (  &quot;ADDS&quot;, &quot;REMOVALS&quot; )</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: delta changes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">changes</span><span class="p">(</span><span class="s1">&#39;object-group&#39;</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span></div>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="OBJS.get_matching_obj_grps"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJS.get_matching_obj_grps">[docs]</a>	<span class="k">def</span> <span class="nf">get_matching_obj_grps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">requests</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;matches provided (request members) in all object-groups available on device and </span>
+<span class="sd">		returns dictionary of object-group names, where object-group matches same members in it.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			requests (tuple, list, set): list/set/tuple with members of dict, containing </span>
+<span class="sd">				&#39;source&#39;, &#39;destination&#39;, &#39;ports&#39; as keys.</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: Invalid Request type</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: include all three, src, dest, port</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">candidates</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+		<span class="n">group_names</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NotValidRequestProvided-</span><span class="si">{</span><span class="n">requests</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">requests</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">loc</span><span class="p">,</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="k">if</span> <span class="n">request</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ANY</span><span class="p">:</span> <span class="k">continue</span>
+				<span class="n">member</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="n">loc</span><span class="p">])</span>
+		<span class="k">for</span> <span class="n">loc</span><span class="p">,</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">obj_grps_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matching_obj_grps</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">obj_grps_list</span><span class="p">:</span>
+				<span class="n">group_names</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_grps_list</span>
+		<span class="k">return</span> <span class="n">group_names</span></div>
+
+<div class="viewcode-block" id="OBJS.matching_obj_grps"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJS.matching_obj_grps">[docs]</a>	<span class="k">def</span> <span class="nf">matching_obj_grps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;matches provided [members] in all object-groups available on device and </span>
+<span class="sd">		returns list of object-group names, where object-group matches same members in it.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			member (list, set, tuple): list/set/tuple with members</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			list: singular object</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+			<span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
+			<span class="n">g</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+				<span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">member</span><span class="p">:</span>
+					<span class="n">match</span> <span class="o">=</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">obj</span>
+					<span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span> <span class="k">break</span>
+				<span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">member</span><span class="p">):</span> <span class="n">g</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">g</span></div>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ INTERNALS ~~~~~~~~~~~~~~~~~~~</span>
+
+	<span class="k">def</span> <span class="nf">_set_obj_grp_basics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;set basic information of each object-group.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: representation dictionary of self.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">obj_grp_name</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">for</span> <span class="n">obj_grps_line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grps_list</span><span class="p">:</span>
+			<span class="n">spaces</span> <span class="o">=</span> <span class="n">STR</span><span class="o">.</span><span class="n">indention</span><span class="p">(</span><span class="n">obj_grps_line</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">spaces</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">spl_obj_grps_line</span> <span class="o">=</span> <span class="n">obj_grps_line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+				<span class="n">obj_grp_type</span> <span class="o">=</span> <span class="n">spl_obj_grps_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+				<span class="n">obj_grp_name</span> <span class="o">=</span> <span class="n">spl_obj_grps_line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+				<span class="k">if</span> <span class="n">obj_grp_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_grp_type</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">][</span><span class="s1">&#39;candiates_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="n">obj_grp_svc_filter</span> <span class="o">=</span> <span class="n">spl_obj_grps_line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">][</span><span class="s1">&#39;svc_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_grp_svc_filter</span>
+				<span class="k">except</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">][</span><span class="s1">&#39;svc_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">][</span><span class="s1">&#39;candiates_list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_grps_line</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span>
+
+<div class="viewcode-block" id="OBJS.set_objects"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJS.set_objects">[docs]</a>	<span class="k">def</span> <span class="nf">set_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;set extended information of each object-group.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">h</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">obj_grp_name</span><span class="p">,</span> <span class="n">obj_grp_details</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">obj_grp</span> <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="n">obj_grp_name</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+			<span class="n">obj_grp</span><span class="o">.</span><span class="n">set_instance_primary_details</span><span class="p">(</span><span class="n">obj_grp_details</span><span class="p">)</span>
+			<span class="n">obj_grp</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+			<span class="n">obj_grp</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">obj_grp_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_grp</span>
+			<span class="n">h</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1"># Object Group Detail</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="OBJ"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ">[docs]</a><span class="k">class</span> <span class="nc">OBJ</span><span class="p">(</span><span class="n">Singulars</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Individual group object</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">		Singulars (Singulars): Inherits - individual object properties definitions</span>
+
+<span class="sd">	Raises:</span>
+<span class="sd">		Exception: IncorrectIteminItemType</span>
+<span class="sd">		Exception: InvalidGroupMemberType</span>
+<span class="sd">		Exception: NoValidCandidate</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		OBJ: a single object-group object</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_grp_name</span><span class="p">,</span> <span class="n">_hash</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Individual object-group object initialization</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj_grp_name (str): name of an object-group</span>
+<span class="sd">			_hash (int): hashes for object-group</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj_grp_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">obj_grp_name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">removals</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="n">_hash</span>
+	<span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
+		<span class="k">return</span> <span class="p">(((</span><span class="bp">self</span><span class="o">&gt;</span><span class="n">obj</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> 
+			<span class="ow">and</span> <span class="p">((</span><span class="n">obj</span><span class="o">&gt;</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> 
+			<span class="c1"># and (self.description == obj.description)		# tantative</span>
+			<span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len_of_members</span><span class="p">()</span>
+	<span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contains</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+	<span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+		<span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span>
+	<span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+		<span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span>
+	<span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="n">diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+		<span class="n">obj_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blank_copy_of_self</span><span class="p">()</span>
+		<span class="n">obj_grp</span><span class="o">.</span><span class="n">_repr_dic</span> <span class="o">=</span> <span class="n">diffs</span>
+		<span class="k">if</span> <span class="n">diffs</span><span class="p">:</span> <span class="k">return</span> <span class="n">obj_grp</span>
+	<span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="n">diffs</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">obj_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blank_copy_of_self</span><span class="p">()</span>
+		<span class="n">obj_grp</span><span class="o">.</span><span class="n">_repr_dic</span> <span class="o">=</span> <span class="n">diffs</span>
+		<span class="k">if</span> <span class="n">diffs</span><span class="p">:</span> <span class="k">return</span> <span class="n">obj_grp</span>
+	<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+		<span class="n">newobj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">newobj</span> <span class="o">+=</span> <span class="n">attribs</span>
+		<span class="k">return</span> <span class="n">newobj</span>
+	<span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span> 
+		<span class="n">newobj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">newobj</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">attribs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">newobj</span>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ EXTERNAL CALLABLES ~~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="OBJ.str"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.str">[docs]</a>	<span class="k">def</span> <span class="nf">str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;String representation of full object-group</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: object-group</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_head</span><span class="p">()</span>
+		<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_description</span><span class="p">()</span>
+		<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">s</span></div>
+
+	<span class="c1"># object-group additions / removals</span>
+<div class="viewcode-block" id="OBJ.add"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.add">[docs]</a>	<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">)</span></div>
+<div class="viewcode-block" id="OBJ.delete"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.delete">[docs]</a>	<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">)</span></div>
+
+	<span class="c1"># String representation of object-group additions / removals</span>
+<div class="viewcode-block" id="OBJ.add_str"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.add_str">[docs]</a>	<span class="k">def</span> <span class="nf">add_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span></div>
+<div class="viewcode-block" id="OBJ.del_str"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.del_str">[docs]</a>	<span class="k">def</span> <span class="nf">del_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">removals</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OBJ.over"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.over">[docs]</a>	<span class="k">def</span> <span class="nf">over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acls</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; returns dictionary of acls with acl/line/attribute if object group present in any acls</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			acls (ACLS): dictionary of all acls (ACLS)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: dictionary of acls with acl/line/attribute </span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">acl</span> <span class="ow">in</span> <span class="n">acls</span><span class="p">:</span>
+			<span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_within</span><span class="p">(</span><span class="n">acl</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="OBJ.has"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.has">[docs]</a>	<span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;returns object group if self contains provided object-group.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (OBJ): object-group object to check within</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			(OBJ, None, False): object-group object if self within it else None</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="s1">&#39;group-object&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">for</span> <span class="n">sgrp</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;group-object&#39;</span><span class="p">]:</span>			
+			<span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">[</span><span class="n">sgrp</span><span class="p">]:</span>
+				<span class="k">return</span> <span class="bp">self</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">[</span><span class="n">sgrp</span><span class="p">]</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">False</span></div>
+
+
+	<span class="c1"># ---------------- Operate on a Copy --------------- 	</span>
+
+	<span class="k">def</span> <span class="nf">_blank_copy_of_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;create and return a copy of original instance</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			OBJ: copy of self</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">obj_grp</span> <span class="o">=</span> <span class="n">OBJ</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">obj_grp</span><span class="o">.</span><span class="n">set_instance_primary_details</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grp_details</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">obj_grp</span>
+
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ INTERNALS / SUPPORTIVE ~~~~~~~~~~~~~~~~~~~</span>
+
+	<span class="k">def</span> <span class="nf">_within</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acl</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;if self object group is within an acl, provides line number and  attributes details </span>
+<span class="sd">		with matching object group name</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			acl (ACL): access-list object to check within</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: dictionary of acls with line/attributes for matching self.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">acl_name</span> <span class="o">=</span> <span class="n">acl</span><span class="o">.</span><span class="n">name</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">acl</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">GROUP_VALID_FIELDS</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">ACL_REMARK</span><span class="p">):</span> <span class="k">continue</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">attr</span><span class="p">],</span> <span class="n">OBJ</span><span class="p">):</span> <span class="k">continue</span>
+				<span class="n">selfmatch</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">self</span>
+				<span class="n">parentmatch</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">selfmatch</span> <span class="ow">or</span> <span class="n">parentmatch</span><span class="p">):</span> <span class="k">continue</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acl_name</span><span class="p">):</span> <span class="n">d</span><span class="p">[</span><span class="n">acl_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">[</span><span class="n">acl_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">d</span><span class="p">[</span><span class="n">acl_name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+				<span class="n">d</span><span class="p">[</span><span class="n">acl_name</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">selfmatch</span> <span class="k">else</span> <span class="n">parentmatch</span>
+		<span class="k">return</span> <span class="n">d</span>
+
+	<span class="k">def</span> <span class="nf">_len_of_members</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting len() : count of total members</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			int: count of total members</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+			<span class="n">l</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">l</span>
+
+	<span class="k">def</span> <span class="nf">_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting - [x in, not in instance]:</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			member (str, int, list, set, tuple, Network, Ports): member(s) to check in self</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			Bool: boolean return if matches member in self.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Network</span><span class="p">,</span> <span class="n">Ports</span><span class="p">)):</span>
+			<span class="n">member_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_member_type</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+			<span class="n">member_obj</span> <span class="o">=</span> <span class="n">get_member_obj</span><span class="p">(</span><span class="n">member_type</span><span class="p">,</span> <span class="n">member</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">member_type</span><span class="p">):</span> <span class="k">return</span> <span class="kc">None</span>
+			<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">member_type</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">OBJ</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_</span><span class="o">.</span><span class="n">_contains</span><span class="p">(</span><span class="n">member</span><span class="p">):</span>
+					<span class="k">return</span> <span class="n">_</span>
+				<span class="k">else</span><span class="p">:</span> <span class="k">pass</span>
+				<span class="k">if</span> <span class="n">member_obj</span> <span class="o">==</span> <span class="n">_</span><span class="p">:</span>  <span class="k">return</span> <span class="n">_</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">set</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
+			<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">member</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
+			<span class="k">return</span> <span class="kc">True</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># print(type(member))</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+	<span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting inst.add(member) : method for setting key/value for instance</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item (str, int, list, set, tuple): item/attribute to be added to object-group</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: IncorrectIteminItemType</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: Delta of addition</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+			<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>  
+				<span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">s</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+			<span class="n">item_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_member_type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+			<span class="n">updated_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_item_object</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj_add</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">updated_item</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IncorrectIteminItemType-</span><span class="si">{</span><span class="n">item_type</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting inst.delete(member) : method for removing key/value for instance</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item (str, int, list, set, tuple): item/attribute to be removed from object-group</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: IncorrectIteminItemType</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: Delta of deletion</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+			<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span> 
+				<span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">_</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">s</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+			<span class="n">item_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_member_type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+			<span class="n">updated_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_item_object</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj_delete</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">updated_item</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IncorrectIteminItemType-</span><span class="si">{</span><span class="n">item_type</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting in comparision between to instances (a &gt; b, a &lt; b):</span>
+<span class="sd">		compare and return differences in dictionary.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj (OBJ): another object of an object-group to match with</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: differences dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">diffs</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">OBJ</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span>
+		<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_type</span> <span class="o">==</span> <span class="n">obj</span><span class="o">.</span><span class="n">obj_grp_type</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span> <span class="o">==</span> <span class="n">obj</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">t</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">diffs</span>
+
+		<span class="k">for</span> <span class="n">self_k</span><span class="p">,</span> <span class="n">self_v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">self_k</span><span class="p">):</span>
+				<span class="n">obj</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="n">obj_v</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">obj_v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">diffs</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_v</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">found</span> <span class="o">=</span> <span class="n">self_v</span> <span class="o">==</span> <span class="n">obj_v</span>
+				<span class="k">if</span> <span class="n">found</span><span class="p">:</span> <span class="k">continue</span>
+				<span class="n">diffs</span><span class="p">[</span><span class="n">self_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_v</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">obj_v</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">diffs</span>
+
+	<span class="c1"># ----------------- String repr / supportive --------------- #</span>
+
+	<span class="k">def</span> <span class="nf">_group_head</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;return String representation of object-group header/name line</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: object-group header/name</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;object-group </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_group_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;return String representation of object-group description line</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: object-group description</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; description </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;return String representation of object-group ( add/remove actions )</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			dic (dict): Delta dictionary generated during add/remove action</span>
+<span class="sd">			header (bool, optional): add header line or not. Defaults to True</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: object-group</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_head</span><span class="p">()</span> <span class="k">if</span> <span class="n">header</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>		
+		<span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+		<span class="n">negate</span> <span class="o">=</span> <span class="s1">&#39;no &#39;</span> <span class="k">if</span> <span class="n">dic</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">removals</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">_type</span><span class="p">,</span> <span class="n">candidates</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+				<span class="c1"># _c = self._get_candidate_str(c)</span>
+				<span class="n">m</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">negate</span><span class="si">}{</span><span class="n">_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+		<span class="n">s</span> <span class="o">+=</span> <span class="n">m</span>
+		<span class="k">return</span> <span class="n">s</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="n">m</span>
+
+
+	<span class="c1">## ----------- Other Supportive to Supportives --------- ##</span>
+
+	<span class="k">def</span> <span class="nf">_get_candidate_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting method to get the OBJ object name</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			c (OBJ): object-group object</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: object-group name</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">OBJ</span><span class="p">)</span> <span class="k">else</span> <span class="n">c</span>
+
+	<span class="k">def</span> <span class="nf">_get_item_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting method for retriving member-type/member pair for for a member</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item_type (str): string of item type</span>
+<span class="sd">			item (str): string of item</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			various: item object( Network, Ports, etc. )</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">spl_line</span> <span class="o">=</span> <span class="p">[</span><span class="n">item_type</span><span class="p">]</span>
+		<span class="n">spl_line</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+		<span class="n">updated_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_member</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">spl_line</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">updated_item</span>
+
+	<span class="k">def</span> <span class="nf">_get_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">,</span> <span class="n">spl_line</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting method for retriving member object for provided object-type </span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj_type (str): string of item type</span>
+<span class="sd">			spl_line (list): object group member splitted line</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: InvalidGroupMemberType</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			various: item object( Network, Ports, etc. )</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;network-object&#39;</span><span class="p">:</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="n">network_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;port-object&#39;</span><span class="p">:</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="n">port_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;icmp-object&#39;</span><span class="p">:</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="n">icmp_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;protocol-object&#39;</span><span class="p">:</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="n">protocol_group_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;group-object&#39;</span><span class="p">:</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="n">group_object_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;InvalidGroupMemberType-Noticed-[</span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="si">{</span><span class="n">spl_line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">member</span>
+
+	<span class="k">def</span> <span class="nf">_obj_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;supporting method for setting key/value for instance</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item_type (str): string of item type</span>
+<span class="sd">			item (str): item object( Network, Ports, etc. )</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: string of delta changes for item addition</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_type</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">adds</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_type</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">adds</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+		<span class="k">return</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">item_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+	<span class="c1"># supporting method for removing key/value for instance</span>
+	<span class="k">def</span> <span class="nf">_obj_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;	# supporting method for removing key/value for instance</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			item_type (str): string of item type</span>
+<span class="sd">			item (str): item object( Network, Ports, etc. )</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: NoValidCandidate</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: string of delta changes for item deletion</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">removals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_type</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">removals</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">removals</span><span class="p">[</span><span class="n">item_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item_type</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">item_type</span><span class="p">])</span>
+			<span class="k">return</span> <span class="sa">f</span><span class="s2">&quot; no </span><span class="si">{</span><span class="n">item_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+		<span class="k">except</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NoValidCandidateFoundToRemove/OrAlreadyRemoved-</span><span class="se">\n</span><span class="si">{</span><span class="n">item_type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>			
+
+	<span class="k">def</span> <span class="nf">_get_member_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;dynamic detection of member-type for given member</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			member (str): string representation of member</span>
+
+<span class="sd">		Raises:</span>
+<span class="sd">			Exception: InvalidMember</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			str: string representation of member-type for provided member</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">MEMBERS_MEMBERTYPES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span> <span class="k">return</span> <span class="n">v</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">network_member</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+			<span class="k">return</span> <span class="s1">&#39;network-object&#39;</span>
+		<span class="k">except</span><span class="p">:</span>
+			<span class="k">pass</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">port_member</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+			<span class="k">return</span> <span class="s1">&#39;port-object&#39;</span>
+		<span class="k">except</span><span class="p">:</span>
+			<span class="k">pass</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s1">&#39;group-object&#39;</span>
+		<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;InvalidMemberFound:</span><span class="si">{</span><span class="n">member</span><span class="si">}</span><span class="s2">, unable to generate member type for it.&quot;</span><span class="p">)</span>
+
+
+
+	<span class="c1"># ~~~~~~ CALLABLE ~~~~~~~~~~~~~~~~~~~</span>
+	<span class="c1"># USED WHILE INITIATLIZING / PARSER</span>
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<div class="viewcode-block" id="OBJ.set_instance_primary_details"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.set_instance_primary_details">[docs]</a>	<span class="k">def</span> <span class="nf">set_instance_primary_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_grp_details</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;set primary variable details of instance</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			obj_grp_details (dict): object-group primary/basic details (candidates-list, type, service-filter)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_lines_list</span> <span class="o">=</span> <span class="n">obj_grp_details</span><span class="p">[</span><span class="s1">&#39;candiates_list&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_type</span> <span class="o">=</span> <span class="n">obj_grp_details</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span> <span class="o">=</span> <span class="n">obj_grp_details</span><span class="p">[</span><span class="s1">&#39;svc_filter&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OBJ.parse"><a class="viewcode-back" href="../../__acg.html#fwOper.acg.OBJ.parse">[docs]</a>	<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;starts parsing object-group-config-lines-list and set extended variables of instance</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_lines_list</span><span class="p">:</span>
+			<span class="n">spl_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+			<span class="n">sub_obj_type</span> <span class="o">=</span> <span class="n">spl_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">sub_obj_type</span> <span class="o">==</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">13</span><span class="p">:]</span>
+				<span class="k">continue</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_member</span><span class="p">(</span><span class="n">spl_line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spl_line</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spl_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> 
+				<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">spl_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+			<span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_candidate_str</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_repr_dic</span><span class="p">[</span><span class="n">spl_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">member</span><span class="p">)</span></div>
+
+	<span class="c1"># ~~~~~~~~~~~~~~~~~~~ PROPERTIES ~~~~~~~~~~~~~~~~~~~</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">grp_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;object group details in dictionary (helpful in generating copy)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			dict: object-group primary/basic details</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">_grp_details</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_type</span><span class="p">,</span>
+			<span class="s1">&#39;svc_filter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_grp_svc_filter</span><span class="p">,</span>
+			<span class="s1">&#39;candiates_list&#39;</span><span class="p">:</span> <span class="p">[],</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="n">_grp_details</span></div>
+	
+
+
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1">#   Main</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="k">pass</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, ALIASGAR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
