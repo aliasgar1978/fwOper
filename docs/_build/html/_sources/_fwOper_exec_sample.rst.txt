@@ -5,7 +5,7 @@ Sample Execution Steps!
 Here below is the sample code from my desk, alter it as per your need to get the desired result. 
 
 
-.. code:: pyhon
+.. code:: python
 
 	# ------------------------------------------------------------------------------
 	# Imports

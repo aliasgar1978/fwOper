@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4. Sample Execution Steps! &mdash; fwOper 0.0.4 documentation</title>
+  <title>3.4. Sample Execution Steps! &mdash; fwOper 0.0.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,8 +17,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Technical documentation!" href="_tech_doc.html" />
-    <link rel="prev" title="3. fw_Oper.route User documentation!" href="_routes_exec.html" /> 
+    <link rel="next" title="4. Technical documentation!" href="_tech_doc.html" />
+    <link rel="prev" title="3.3. fw_Oper.route User documentation!" href="_routes_exec.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,14 +38,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="_user_doc.html">1. User documentation!</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="_acl_exec.html">1. fw_Oper.acl User documentation!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_acg_exec.html">2. fw_Oper.acg User documentation!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_routes_exec.html">3. fw_Oper.route User documentation!</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">4. Sample Execution Steps!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_preface.html">1. fwOper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_install.html">2. Installation &amp; Requirements</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="_user_doc.html">3. User documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="_acl_exec.html">3.1. fw_Oper.acl User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_acg_exec.html">3.2. fw_Oper.acg User documentation!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_routes_exec.html">3.3. fw_Oper.route User documentation!</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.4. Sample Execution Steps!</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="_tech_doc.html">2. Technical documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tech_doc.html">4. Technical documentation!</a></li>
 </ul>
 
         </div>
@@ -62,8 +64,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="_user_doc.html"><span class="section-number">1. </span>User documentation!</a> &raquo;</li>
-      <li><span class="section-number">4. </span>Sample Execution Steps!</li>
+          <li><a href="_user_doc.html"><span class="section-number">3. </span>User documentation!</a> &raquo;</li>
+      <li><span class="section-number">3.4. </span>Sample Execution Steps!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/_fwOper_exec_sample.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -74,291 +76,291 @@
            <div itemprop="articleBody">
              
   <div class="section" id="sample-execution-steps">
-<h1><span class="section-number">4. </span>Sample Execution Steps!<a class="headerlink" href="#sample-execution-steps" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">3.4. </span>Sample Execution Steps!<a class="headerlink" href="#sample-execution-steps" title="Permalink to this headline"></a></h1>
 <p>Here below is the sample code from my desk, alter it as per your need to get the desired result.</p>
-<div class="highlight-pyhon notranslate"><div class="highlight"><pre><span></span># ------------------------------------------------------------------------------
-# Imports
-# ------------------------------------------------------------------------------
-import os
-import pandas as pd
-from collections import OrderedDict
-from pprint import pprint
-import fwOper
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Imports</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">import</span> <span class="nn">fwOper</span>
 
 
 
-#  sample DATABASE request.xlsx FORMAT
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
-# |request_type|firewall_name|firewall_instance|acl_name|action|source|destination|protocol|ports|remark|insert_at|source_grp|destination_grp|ports_grp|protocol_grp|
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
+<span class="c1">#  sample DATABASE request.xlsx FORMAT</span>
+<span class="c1"># ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #</span>
+<span class="c1"># |request_type|firewall_name|firewall_instance|acl_name|action|source|destination|protocol|ports|remark|insert_at|source_grp|destination_grp|ports_grp|protocol_grp|</span>
+<span class="c1"># ------------------------------------------------------------------------------------------------------------------------------------------------------------------- #</span>
 
 
-# ------------------------------------------------------------------------------
-#  global vars
-# ------------------------------------------------------------------------------
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1">#  global vars</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
 
-REQUEST_TYPES = (&#39;del&#39;, &#39;add&#39;)
-GROUPBY_SEQUENCE = [&#39;request_type&#39;, &#39;firewall_name&#39;, &#39;firewall_instance&#39;, &#39;acl_name&#39;]
+<span class="n">REQUEST_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;del&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="n">GROUPBY_SEQUENCE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;request_type&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall_name&#39;</span><span class="p">,</span> <span class="s1">&#39;firewall_instance&#39;</span><span class="p">,</span> <span class="s1">&#39;acl_name&#39;</span><span class="p">]</span>
 
-# ------------------------------------------------------------------------------
-#                               FUNCTIONS
-# ------------------------------------------------------------------------------
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1">#                               FUNCTIONS</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
 
-def get_file_name(folder, hostname):
-        &quot;&quot;&quot;file name for the given hostname in folder
-        assumed that firewall logs are stored with hostname as filename
+<span class="k">def</span> <span class="nf">get_file_name</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">hostname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;file name for the given hostname in folder</span>
+<span class="sd">        assumed that firewall logs are stored with hostname as filename</span>
 
-        Args:
-                folder (str): Folder path
-                hostname (str): hostname
+<span class="sd">        Args:</span>
+<span class="sd">                folder (str): Folder path</span>
+<span class="sd">                hostname (str): hostname</span>
 
-        Returns:
-                str: filename containing hostname in given folder.
-        &quot;&quot;&quot;
-        for file in os.listdir(folder):
-                if file.lower().find(hostname.lower()) &gt; -1:
-                        return file
-
-
-def filter_request(request):
-        &quot;&quot;&quot;filters request dictionary for the mentioned fields only
-
-        Args:
-                request (dict): input request attributes
-
-        Returns:
-                dict: filtered request attributes
-        &quot;&quot;&quot;
-        fields = {&#39;source&#39;, &#39;destination&#39;, &#39;protocol&#39;, &#39;ports&#39;, &#39;action&#39;, &#39;remark&#39;, &#39;insert_at&#39;}
-        return {field: request[field] for field in fields if request[field]}
+<span class="sd">        Returns:</span>
+<span class="sd">                str: filename containing hostname in given folder.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">hostname</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">file</span>
 
 
-def execute_req(req_type, Firewalls, req_grp):
-        &quot;&quot;&quot;Excute the ACL Change request
+<span class="k">def</span> <span class="nf">filter_request</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;filters request dictionary for the mentioned fields only</span>
 
-        Args:
-                req_type (str): request type (either &#39;add&#39;, &#39;del&#39;)
-                Firewalls (dict): Firewall objects dictionary
-                req_grp (dict): grouped input requests
+<span class="sd">        Args:</span>
+<span class="sd">                request (dict): input request attributes</span>
 
-        Returns:
-                s: delta change for the execution of request
-        &quot;&quot;&quot;
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ~~~~ go sequencial on REQUEST_TYPES (&#39;del&#39;, &#39;add&#39;) ~~~~
-        if req_grp[&#39;request_grp&#39;][&#39;request_type&#39;] != req_type: return &#39;&#39;
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ~~~~ set group request variable ~~~~
-        grp_request = req_grp[&#39;req_grp&#39;]
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ~~~~ set fw parameters/variables ~~~~
-        fw = Firewalls[req_grp[&#39;request_grp&#39;][&#39;firewall_name&#39;]]
-        fw_inst = fw.instances[req_grp[&#39;request_grp&#39;][&#39;firewall_instance&#39;]]
-        acl = fw_inst.acls[req_grp[&#39;request_grp&#39;][&#39;acl_name&#39;]]
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ~~~~ execute request based on request type ~~~~
-        if req_type == &#39;del&#39;:  return execute_del_req(acl, grp_request)
-        if req_type == &#39;add&#39;:  return execute_add_req(acl, grp_request)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-def execute_del_req(acl, grp_request):
-        &quot;&quot;&quot;execution of grouped delete requests
-
-        Args:
-                acl (ACL): access-list object
-                grp_request (list): grouped input request attributes to be deleted on given ACL
-
-        Returns:
-                str: delta change(s) for given delete request
-        &quot;&quot;&quot;
-        ### here some where group check will get insert ### [TBD]
-        acl.sequence = False                                                                            # Enable if require sequence number in delta output
-        s = &#39;&#39;
-        for gr in grp_request:
-                s += acl.delete(gr)
-        return s
+<span class="sd">        Returns:</span>
+<span class="sd">                dict: filtered request attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;destination&#39;</span><span class="p">,</span> <span class="s1">&#39;protocol&#39;</span><span class="p">,</span> <span class="s1">&#39;ports&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;remark&#39;</span><span class="p">,</span> <span class="s1">&#39;insert_at&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="n">request</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="n">request</span><span class="p">[</span><span class="n">field</span><span class="p">]}</span>
 
 
-def execute_add_req(acl, grp_request):
-        &quot;&quot;&quot;execution of grouped add/insert requests
-        &#39;insert_at&#39;-attribute needed per request for inserting, otherwise request will be considered as add(append).
+<span class="k">def</span> <span class="nf">execute_req</span><span class="p">(</span><span class="n">req_type</span><span class="p">,</span> <span class="n">Firewalls</span><span class="p">,</span> <span class="n">req_grp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Excute the ACL Change request</span>
 
-        Args:
-                acl (ACL): access-list object
-                grp_request (list): grouped input request attributes to be added/inserted on given ACL
+<span class="sd">        Args:</span>
+<span class="sd">                req_type (str): request type (either &#39;add&#39;, &#39;del&#39;)</span>
+<span class="sd">                Firewalls (dict): Firewall objects dictionary</span>
+<span class="sd">                req_grp (dict): grouped input requests</span>
 
-        Returns:
-                str: delta change(s) for given add/insert request
-        &quot;&quot;&quot;
-        acl.sequence = True
-        s = &#39;&#39;
-        for gr in grp_request:
-                if gr.get(&#39;insert_at&#39;):
-                        n = int(gr[&#39;insert_at&#39;])
-                        del(gr[&#39;insert_at&#39;])
-                        s += acl.insert(n, gr)
-                else:
-                        s += acl.append(gr)
-        return s
+<span class="sd">        Returns:</span>
+<span class="sd">                s: delta change for the execution of request</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># ~~~~ go sequencial on REQUEST_TYPES (&#39;del&#39;, &#39;add&#39;) ~~~~</span>
+        <span class="k">if</span> <span class="n">req_grp</span><span class="p">[</span><span class="s1">&#39;request_grp&#39;</span><span class="p">][</span><span class="s1">&#39;request_type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">req_type</span><span class="p">:</span> <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># ~~~~ set group request variable ~~~~</span>
+        <span class="n">grp_request</span> <span class="o">=</span> <span class="n">req_grp</span><span class="p">[</span><span class="s1">&#39;req_grp&#39;</span><span class="p">]</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># ~~~~ set fw parameters/variables ~~~~</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="n">Firewalls</span><span class="p">[</span><span class="n">req_grp</span><span class="p">[</span><span class="s1">&#39;request_grp&#39;</span><span class="p">][</span><span class="s1">&#39;firewall_name&#39;</span><span class="p">]]</span>
+        <span class="n">fw_inst</span> <span class="o">=</span> <span class="n">fw</span><span class="o">.</span><span class="n">instances</span><span class="p">[</span><span class="n">req_grp</span><span class="p">[</span><span class="s1">&#39;request_grp&#39;</span><span class="p">][</span><span class="s1">&#39;firewall_instance&#39;</span><span class="p">]]</span>
+        <span class="n">acl</span> <span class="o">=</span> <span class="n">fw_inst</span><span class="o">.</span><span class="n">acls</span><span class="p">[</span><span class="n">req_grp</span><span class="p">[</span><span class="s1">&#39;request_grp&#39;</span><span class="p">][</span><span class="s1">&#39;acl_name&#39;</span><span class="p">]]</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># ~~~~ execute request based on request type ~~~~</span>
+        <span class="k">if</span> <span class="n">req_type</span> <span class="o">==</span> <span class="s1">&#39;del&#39;</span><span class="p">:</span>  <span class="k">return</span> <span class="n">execute_del_req</span><span class="p">(</span><span class="n">acl</span><span class="p">,</span> <span class="n">grp_request</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">req_type</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span>  <span class="k">return</span> <span class="n">execute_add_req</span><span class="p">(</span><span class="n">acl</span><span class="p">,</span> <span class="n">grp_request</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="k">def</span> <span class="nf">execute_del_req</span><span class="p">(</span><span class="n">acl</span><span class="p">,</span> <span class="n">grp_request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;execution of grouped delete requests</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">                acl (ACL): access-list object</span>
+<span class="sd">                grp_request (list): grouped input request attributes to be deleted on given ACL</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">                str: delta change(s) for given delete request</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">### here some where group check will get insert ### [TBD]</span>
+        <span class="n">acl</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="kc">False</span>                                                                            <span class="c1"># Enable if require sequence number in delta output</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">grp_request</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="n">acl</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
 
 
+<span class="k">def</span> <span class="nf">execute_add_req</span><span class="p">(</span><span class="n">acl</span><span class="p">,</span> <span class="n">grp_request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;execution of grouped add/insert requests</span>
+<span class="sd">        &#39;insert_at&#39;-attribute needed per request for inserting, otherwise request will be considered as add(append).</span>
 
-def check_exact_group()
-        source_grp=fwOper.NetworkObject()
-        item = &#39;destination&#39;
-        values = set()
-        for gr in grp_request:
-                values.add(gr[&#39;destination&#39;])
-        dum_grp = fwOper.dummy_group(source_grp, item, values)
+<span class="sd">        Args:</span>
+<span class="sd">                acl (ACL): access-list object</span>
+<span class="sd">                grp_request (list): grouped input request attributes to be added/inserted on given ACL</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">                str: delta change(s) for given add/insert request</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">acl</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">grp_request</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">gr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insert_at&#39;</span><span class="p">):</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s1">&#39;insert_at&#39;</span><span class="p">])</span>
+                        <span class="k">del</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s1">&#39;insert_at&#39;</span><span class="p">])</span>
+                        <span class="n">s</span> <span class="o">+=</span> <span class="n">acl</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">s</span> <span class="o">+=</span> <span class="n">acl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
 
 
 
-# ------------------------------------------------------------------------------
-#                                  CLASSES
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# REQUEST Parameters
-# ------------------------------------------------------------------------------
-class Request():
-        &quot;&quot;&quot;Firewall change request (Excel) method, properties, exections
-        &quot;&quot;&quot;
-
-        def __init__(self, request_input_file, sheet_name=&#39;Sheet1&#39;):
-                &quot;&quot;&quot;provide excel input file
-
-                Args:
-                        request_input_file (str): input request file
-                &quot;&quot;&quot;
-                self.request_input_file = request_input_file
-                self.get_dataframe(sheet_name)
-
-        def get_dataframe(self, sheet_name):
-                &quot;&quot;&quot;creates data frame (requests), and firewalls name-list in the requests
-                &quot;&quot;&quot;
-                self.requests = pd.read_excel(self.request_input_file, sheet_name=sheet_name).fillna(&quot;&quot;)
-                self.firewalls = self.requests.firewall_name.unique()
-                self.requests = self.requests.groupby( GROUPBY_SEQUENCE )
-
-        def group_members(self, group):
-                &quot;&quot;&quot;convert the grouping members in dictionary format ( from tuples (group, df) ),
-                also updaets missing firewall_instance with default &#39;system&#39;.
-
-                Args:
-                        group (dict of tulpes): group members
-
-                Returns:
-                        dict: grouping members
-                &quot;&quot;&quot;
-                members = {}
-                for i, gm in enumerate(GROUPBY_SEQUENCE):
-                        if gm == &#39;firewall_instance&#39; and group[0][i] == &#39;&#39;:
-                                members[gm] = &#39;system&#39;
-                        else:
-                                members[gm] = group[0][i]
-                return members
-
-        def create_request_group(self, df):
-                &quot;&quot;&quot;create the requests list based on group
-
-                Args:
-                        df (pandas.DataFrame): filtered (member) DataFrame to create a list of group request
-
-                Returns:
-                        list: input requests
-                &quot;&quot;&quot;
-                req_grp = []
-                d = df.T.to_dict()
-                for i, req in d.items():
-                        req_grp.append(filter_request(req))
-                return req_grp
-
-        def gen_request_id_groups(self):
-                &quot;&quot;&quot;group input request and get the grouped request format= {id:req_grp_dict}
-
-                Returns:
-                        dict: grouped request
-                &quot;&quot;&quot;
-                request_id_grp = {}
-                for i, group in enumerate(self.requests):
-                        request_grp = self.group_members(group)                 # get request type
-                        request_df = group[1]
-                        req_grp = self.create_request_group(request_df) # get group of requests.
-                        request_id_grp[i] = {&#39;request_grp&#39;:request_grp, &#39;req_grp&#39;:req_grp}
-                return request_id_grp
-
-# ------------------------------------------------------------------------------
-# Firewall Object
-# ------------------------------------------------------------------------------
-class Firewall(object):
-        &quot;&quot;&quot;A Firewall object
-
-        Args:
-                object (object): default
-        &quot;&quot;&quot;
-
-        def __init__(self, folder, firewall):
-                &quot;&quot;&quot;provide folder and firewall name for which Firewall object to be created
-
-                attributes:
-                        instances: instances of the firewall
-
-                Args:
-                        folder (str): folder path where config backup stored
-                        firewall (str): firewall name with which backup is stored
-                &quot;&quot;&quot;
-                file = get_file_name(folder, firewall)
-                self.read(folder, file)
-
-        def read(self, folder, file):
-                &quot;&quot;&quot;reads firewall configuration file from provided folder.
-
-                Raises:
-                        Exception: MissingInput
-
-                Args:
-                        folder (str): where configuration files stored
-                        file (str): filename of config file
-                &quot;&quot;&quot;
-                try:
-                        with open(folder+file, &#39;r&#39;) as f:
-                                fw_lst = f.readlines()
-                                self.instances = fwOper.get_object(fwOper.Instances, conf_list=fw_lst)
-                except:
-                        Exception(f&quot;MissingInput{folder+file}&quot;)
-
-
-# ------------------------------------------------------------------------------
-# EXECUTION
-# ------------------------------------------------------------------------------
-if __name__ == &#39;__main__&#39;:
-        pass
-# ------------------------------------------------------------------------------
-
-        ############## WAY OF EXECUTION ##############
-
-        # STEP1: Provide Inputs ----------------------------------------------
-        file = &#39;request.xlsx&#39;
-        firewall_backup_folder = &#39;/path_to_firewall_backup_folder/&#39;
-
-        # STEP2: Initialize Request and Firewall inputs ----------------------
-        Req = Request(file)
-        rigs = Req.gen_request_id_groups()
-        Firewalls = {fw: Firewall(firewall_backup_folder, fw) for fw in Req.firewalls}
-
-        # STEP3: Iterate thru requests ---------------------------------------
-        for req_type in REQUEST_TYPES:  # default (first=&#39;del&#39;, second=&#39;add&#39;)
-                for i, req_id_grp in rigs.items():
-                        pass
-                        s = execute_req(req_type, Firewalls, req_id_grp)
-                        if s: print(s)                  # This is delta output
+<span class="k">def</span> <span class="nf">check_exact_group</span><span class="p">()</span>
+        <span class="n">source_grp</span><span class="o">=</span><span class="n">fwOper</span><span class="o">.</span><span class="n">NetworkObject</span><span class="p">()</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;destination&#39;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">grp_request</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s1">&#39;destination&#39;</span><span class="p">])</span>
+        <span class="n">dum_grp</span> <span class="o">=</span> <span class="n">fwOper</span><span class="o">.</span><span class="n">dummy_group</span><span class="p">(</span><span class="n">source_grp</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 
 
 
-        fw = &#39;testfw&#39;                                   # provide FW Name to see update
-        print(Firewalls[fw].instances.system.acls.al_PERMIT_I)  # This is updated ACL
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1">#                                  CLASSES</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
 
-# ------------------------------------------------------------------------------
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># REQUEST Parameters</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">Request</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Firewall change request (Excel) method, properties, exections</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_input_file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;provide excel input file</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                        request_input_file (str): input request file</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">request_input_file</span> <span class="o">=</span> <span class="n">request_input_file</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;creates data frame (requests), and firewalls name-list in the requests</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">requests</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_input_file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">sheet_name</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">firewalls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="o">.</span><span class="n">firewall_name</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">requests</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="n">GROUPBY_SEQUENCE</span> <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">group_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;convert the grouping members in dictionary format ( from tuples (group, df) ),</span>
+<span class="sd">                also updaets missing firewall_instance with default &#39;system&#39;.</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                        group (dict of tulpes): group members</span>
+
+<span class="sd">                Returns:</span>
+<span class="sd">                        dict: grouping members</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GROUPBY_SEQUENCE</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">gm</span> <span class="o">==</span> <span class="s1">&#39;firewall_instance&#39;</span> <span class="ow">and</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                                <span class="n">members</span><span class="p">[</span><span class="n">gm</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;system&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                                <span class="n">members</span><span class="p">[</span><span class="n">gm</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">members</span>
+
+        <span class="k">def</span> <span class="nf">create_request_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;create the requests list based on group</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                        df (pandas.DataFrame): filtered (member) DataFrame to create a list of group request</span>
+
+<span class="sd">                Returns:</span>
+<span class="sd">                        list: input requests</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">req_grp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">req_grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filter_request</span><span class="p">(</span><span class="n">req</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">req_grp</span>
+
+        <span class="k">def</span> <span class="nf">gen_request_id_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;group input request and get the grouped request format= {id:req_grp_dict}</span>
+
+<span class="sd">                Returns:</span>
+<span class="sd">                        dict: grouped request</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">request_id_grp</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">):</span>
+                        <span class="n">request_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_members</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>                 <span class="c1"># get request type</span>
+                        <span class="n">request_df</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">req_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_request_group</span><span class="p">(</span><span class="n">request_df</span><span class="p">)</span> <span class="c1"># get group of requests.</span>
+                        <span class="n">request_id_grp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;request_grp&#39;</span><span class="p">:</span><span class="n">request_grp</span><span class="p">,</span> <span class="s1">&#39;req_grp&#39;</span><span class="p">:</span><span class="n">req_grp</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">request_id_grp</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Firewall Object</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">Firewall</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A Firewall object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">                object (object): default</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">firewall</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;provide folder and firewall name for which Firewall object to be created</span>
+
+<span class="sd">                attributes:</span>
+<span class="sd">                        instances: instances of the firewall</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                        folder (str): folder path where config backup stored</span>
+<span class="sd">                        firewall (str): firewall name with which backup is stored</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="n">get_file_name</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">firewall</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;reads firewall configuration file from provided folder.</span>
+
+<span class="sd">                Raises:</span>
+<span class="sd">                        Exception: MissingInput</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                        folder (str): where configuration files stored</span>
+<span class="sd">                        file (str): filename of config file</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="k">try</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">folder</span><span class="o">+</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                <span class="n">fw_lst</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">instances</span> <span class="o">=</span> <span class="n">fwOper</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">fwOper</span><span class="o">.</span><span class="n">Instances</span><span class="p">,</span> <span class="n">conf_list</span><span class="o">=</span><span class="n">fw_lst</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                        <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MissingInput</span><span class="si">{</span><span class="n">folder</span><span class="o">+</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># EXECUTION</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+        <span class="c1">############## WAY OF EXECUTION ##############</span>
+
+        <span class="c1"># STEP1: Provide Inputs ----------------------------------------------</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;request.xlsx&#39;</span>
+        <span class="n">firewall_backup_folder</span> <span class="o">=</span> <span class="s1">&#39;/path_to_firewall_backup_folder/&#39;</span>
+
+        <span class="c1"># STEP2: Initialize Request and Firewall inputs ----------------------</span>
+        <span class="n">Req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">rigs</span> <span class="o">=</span> <span class="n">Req</span><span class="o">.</span><span class="n">gen_request_id_groups</span><span class="p">()</span>
+        <span class="n">Firewalls</span> <span class="o">=</span> <span class="p">{</span><span class="n">fw</span><span class="p">:</span> <span class="n">Firewall</span><span class="p">(</span><span class="n">firewall_backup_folder</span><span class="p">,</span> <span class="n">fw</span><span class="p">)</span> <span class="k">for</span> <span class="n">fw</span> <span class="ow">in</span> <span class="n">Req</span><span class="o">.</span><span class="n">firewalls</span><span class="p">}</span>
+
+        <span class="c1"># STEP3: Iterate thru requests ---------------------------------------</span>
+        <span class="k">for</span> <span class="n">req_type</span> <span class="ow">in</span> <span class="n">REQUEST_TYPES</span><span class="p">:</span>  <span class="c1"># default (first=&#39;del&#39;, second=&#39;add&#39;)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">req_id_grp</span> <span class="ow">in</span> <span class="n">rigs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">pass</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">execute_req</span><span class="p">(</span><span class="n">req_type</span><span class="p">,</span> <span class="n">Firewalls</span><span class="p">,</span> <span class="n">req_id_grp</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                  <span class="c1"># This is delta output</span>
+
+
+
+        <span class="n">fw</span> <span class="o">=</span> <span class="s1">&#39;testfw&#39;</span>                                   <span class="c1"># provide FW Name to see update</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">Firewalls</span><span class="p">[</span><span class="n">fw</span><span class="p">]</span><span class="o">.</span><span class="n">instances</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">acls</span><span class="o">.</span><span class="n">al_PERMIT_I</span><span class="p">)</span>  <span class="c1"># This is updated ACL</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
 <p><strong>Thank You!</strong></p>
@@ -368,8 +370,8 @@ if __name__ == &#39;__main__&#39;:
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="_routes_exec.html" class="btn btn-neutral float-left" title="3. fw_Oper.route User documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="_tech_doc.html" class="btn btn-neutral float-right" title="2. Technical documentation!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_routes_exec.html" class="btn btn-neutral float-left" title="3.3. fw_Oper.route User documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_tech_doc.html" class="btn btn-neutral float-right" title="4. Technical documentation!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
