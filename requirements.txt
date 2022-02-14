@@ -1,1 +1,1 @@
-nettoolkit
+nettoolkit>=0.0.11
