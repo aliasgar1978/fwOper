@@ -1,4 +1,3 @@
-
 # ----------------------------------------------------------------------------------------
 from nettoolkit import *
 from collections import OrderedDict
@@ -722,6 +721,7 @@ class ACL(Singulars):
 					if spl_line[pv] in ANY: idx_variance -= 1
 				except:
 					pass
+			# add rest statics and create ACL entry dict
 			self._repr_dic[line_no] = {
 				'remark': remark,
 				'acl_type': spl_line[2],
